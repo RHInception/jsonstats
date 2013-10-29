@@ -12,6 +12,10 @@ class StatsHandler(tornado.web.RequestHandler):
     """
 
     def get(self):
+        # TODO:
+        # 1. load modules to run
+        # 2. Execute each (as a coroutine?)
+        # 3. Return the json all together
         self.write(json.dumps({'data': 'here'}))
 
 
