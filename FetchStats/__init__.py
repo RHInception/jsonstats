@@ -1,8 +1,3 @@
-__all__ = [
-    'RPM',
-    'Facter'
-    ]
-
 class Fetcher(object):
     """
     Base class for fetching data.
