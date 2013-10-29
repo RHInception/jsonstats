@@ -1,0 +1,9 @@
+# -*- mode: shell-script -*-
+
+PREFIX_PYTHONPATH="`pwd`:`pwd`/FetchStats/:`pwd`/FetchStats/"
+PREFIX_PATH="`pwd`/bin"
+
+echo "Prefixing PYTHONPATH with $PREFIX_PYTHONPATH"
+export PYTHONPATH=$PREFIX_PYTHONPATH:$PYTHONPATH
+echo "Prefixing PATH with $PREFIX_PATH"
+export PATH=$PREFIX_PATH:$PATH
