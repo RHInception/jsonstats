@@ -3,6 +3,16 @@ import datetime
 
 from FetchStats import Fetcher
 
+"""
+TODO:
+
+- Turn the newline split list into a dictionary
+
+- Make dump_json use the key parameter to return just a specific RPM
+  version
+"""
+
+
 
 class RPM(Fetcher):
 
@@ -12,14 +22,14 @@ class RPM(Fetcher):
 
         **Note**: This takes more than a few seconds!!
         """
-        self._refresh_time = datetime.datetime.utcnow()
-        self.load_rpm_data()
+        self._load_data()
 
-    def load_rpm_data(self):
-        self._rpms = subprocess.check_output(['rpm', '-qa']).split('\n')[:-1]
+    def _load_data(self):
+        self._refresh_time = datetime.datetime.utcnow()
+        self._rpms = self._exec(['rpm', '-qa'])[1].split('\n')[:-1]
 
     def dump_json(self, key=None):
-        # poor mans cache
+        # poor mans cache, refresh cache in an hour
         if datetime.datetime.utcnow() - datetime.timedelta(hours=1) > self._refresh_time:
             self.load_rpm_data()
         return self.json.dumps(self._rpms)
