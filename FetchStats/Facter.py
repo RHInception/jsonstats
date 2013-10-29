@@ -1,7 +1,7 @@
 import yaml
 import commands
 
-from . import Fetcher
+from FetchStats import Fetcher
 
 
 class Facter(Fetcher):

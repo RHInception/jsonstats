@@ -1,6 +1,9 @@
 
 import datetime
 
+from FetchStats import Fetcher
+
+
 class RPM(Fetcher):
 
     def __init__(self):
