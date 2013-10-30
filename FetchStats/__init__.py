@@ -43,9 +43,9 @@ class Fetcher:
     """
     __metaclass__ = PluginMount
     import json
-    import commands
+    import subprocess
 
-    def dump(self):
+    def dump(self, key=None):
         """
         Return a raw datastructure. This return value is collected by
         the main REST interface and joined with all the other plugins
@@ -75,6 +75,6 @@ class Fetcher:
 
         `cmd` - Command to execute, given as a list
 
-        returns a tuple of (return_status, command_output)
+        returns a string of command_output
         """
-        return self.commands.getstatusoutput(' '.join(cmd))
+        return self.subprocess.check_output(cmd)

@@ -15,7 +15,7 @@ class Facter(Fetcher):
         self.context = 'facter'
 
     def _load_data(self):
-        (ret, output) = self._exec(['facter', ' -p', ' --yaml'])
+        output = self._exec(['facter', ' -p', ' --yaml'])
         self.facts = self.yaml.load(output)
 
     def dump(self):
