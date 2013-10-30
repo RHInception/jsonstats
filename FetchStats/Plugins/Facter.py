@@ -12,7 +12,7 @@ class Facter(Fetcher):
 
     def __init__(self):
         self._load_data()
-        self.plugin_name = 'facter'
+        self.context = 'facter'
 
     def _load_data(self):
         (ret, output) = self._exec(['facter', ' -p', ' --yaml'])

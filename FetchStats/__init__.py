@@ -4,9 +4,7 @@ class PluginMount(type):
     http://martyalchin.com/2008/jan/10/simple-plugin-framework/
     """
     def __init__(cls, name, bases, attrs):
-        print "Trying to create something new here..."
-        print cls
-        print
+        print "Loading plugin... %s" % str(cls)
 
         if not hasattr(cls, 'plugins'):
             # This branch only executes when processing the mount point itself.
