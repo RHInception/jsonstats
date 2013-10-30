@@ -39,5 +39,9 @@ application = tornado.web.Application([
 if __name__ == "__main__":
     print "plugins loaded..."
     print "server listening on http://0.0.0.0:8888"
-    application.listen(8888)
-    tornado.ioloop.IOLoop.instance().start()
+    try:
+        application.listen(8888)
+        tornado.ioloop.IOLoop.instance().start()
+    except KeyboardInterrupt:
+        print "shutting down..."
+        exit(0)
