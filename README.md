@@ -36,3 +36,6 @@ In terminal 2:
 
 * New fact plugins MUST define the `_load_data` method. This method
   may be called internally to refresh a given fact plugins cache.
+
+* New fact plugins module names MUST be added to the `__all__` list in
+  `FetchStats/Plugins/__init__.py`
