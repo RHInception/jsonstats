@@ -28,6 +28,7 @@ class StatsHandler(tornado.web.RequestHandler):
             context = plugin.context
             result[context] = plugin.dump()
         # 3. Return the json all together
+        self.set_header("Content-Type", "application/json")
         self.write(json.dumps(result))
 
 
