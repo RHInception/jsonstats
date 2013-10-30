@@ -13,6 +13,7 @@ class StatsHandler(tornado.web.RequestHandler):
     Gets and returns the stats.
     """
 
+
     _plugins = FetchStats.Fetcher.get_plugins()
 
     def get(self):
@@ -24,8 +25,8 @@ class StatsHandler(tornado.web.RequestHandler):
         #     - currently handled during instantiation
 
         for plugin in self._plugins:
-            plugin_name = plugin.plugin_name
-            result[plugin_name] = plugin.dump()
+            context = plugin.context
+            result[context] = plugin.dump()
         # 3. Return the json all together
         self.write(json.dumps(result))
 
@@ -36,5 +37,7 @@ application = tornado.web.Application([
 
 
 if __name__ == "__main__":
+    print "plugins loaded..."
+    print "server listening on http://0.0.0.0:8888"
     application.listen(8888)
     tornado.ioloop.IOLoop.instance().start()
