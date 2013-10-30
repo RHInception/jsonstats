@@ -1,3 +1,4 @@
+#import FetchStats.Fetcher
 from FetchStats import Fetcher
 
 """
