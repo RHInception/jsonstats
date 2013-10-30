@@ -4,12 +4,16 @@ class Facter(Fetcher):
     import yaml
 
     def __init__(self):
-        self._load_data()
         self.context = 'facter'
+        self._load_data()
 
     def _load_data(self):
-        output = self._exec('facter -p --yaml')
-        self.facts = self.yaml.load(output)
+        try:
+            output = self._exec('facter -p --yaml')
+            self.facts = self.yaml.load(output)
+            self._loaded(True)
+        except Exception, e:
+            self._loaded(False, msg=str(e))
 
     def dump(self):
         return self.facts

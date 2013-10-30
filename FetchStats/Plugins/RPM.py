@@ -10,8 +10,8 @@ class RPM(Fetcher):
 
         **Note**: This takes more than a few seconds!!
         """
-        self._load_data()
         self.context = 'rpm'
+        self._load_data()
 
     def _load_data(self, key=None):
         self._refresh_time = datetime.datetime.utcnow()
@@ -23,9 +23,13 @@ class RPM(Fetcher):
         else:
             cmd = 'rpm -qa --queryformat "%{NAME} %{VERSION}\n"'
 
-        for line in self._exec(cmd).split('\n')[:-1]:
-            (rpm_name, rpm_version) = line.split()
-            self._rpms[rpm_name] = rpm_version
+        try:
+            for line in self._exec(cmd).split('\n')[:-1]:
+                (rpm_name, rpm_version) = line.split()
+                self._rpms[rpm_name] = rpm_version
+            self._loaded(True)
+        except Exception, e:
+            self._loaded(False, str(e))
 
     def dump(self, key=None):
         # poor mans cache, refresh cache in an hour

@@ -22,7 +22,8 @@ class PluginMount(type):
         """
         Returns a list of initialized plugin objects
         """
-        return [p(*args, **kwargs) for p in cls.plugins]
+        instantiate_plugins = [p(*args, **kwargs) for p in cls.plugins]
+        return [p for p in instantiate_plugins if p._state]
 
 
 class Fetcher:
@@ -45,6 +46,8 @@ class Fetcher:
     import json
     import subprocess
     import shlex
+
+    _state = False
 
     def dump(self, key=None):
         """
@@ -79,3 +82,22 @@ class Fetcher:
         returns a string of command_output
         """
         return self.subprocess.check_output(self.shlex.split(cmd))
+
+    def _loaded(self, state, msg=None):
+        """
+        Frob the state of the plugins `_state` attribute. This is
+        used to notify about plugins which fail to load.
+
+        Additionally, if a plugin fails to load, this will stop it
+        from registering with the plugin mount.
+
+        `state` - BOOL - True if the plugin loaded correctly, False
+        otherwise
+
+        `msg` - STRING - Required if `state` == False - Exception text
+        or otherwise helpful error message about the failure
+        """
+        self._state = state
+
+        if not self._state:
+            print "ERROR: Failed to load plugin '%s':\n%s" % (self.context, msg)
