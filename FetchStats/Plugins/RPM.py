@@ -23,11 +23,16 @@ class RPM(Fetcher):
         **Note**: This takes more than a few seconds!!
         """
         self._load_data()
-        self.plugin_name = 'rpm'
+        self.context = 'rpm'
 
     def _load_data(self):
         self._refresh_time = datetime.datetime.utcnow()
-        self._rpms = self._exec(['rpm', '-qa'])[1].split('\n')[:-1]
+        self._rpms = {}
+
+        cmd = 'rpm -qa --queryformat "%{NAME} %{VERSION}\n"'
+        for line in self._exec(cmd.split(' '))[1].split('\n')[:-1]:
+            (rpm_name, rpm_version) = line.split()
+            self._rpms[rpm_name] = rpm_version
 
     def dump(self):
         # poor mans cache, refresh cache in an hour
