@@ -44,6 +44,7 @@ class Fetcher:
     __metaclass__ = PluginMount
     import json
     import subprocess
+    import shlex
 
     def dump(self, key=None):
         """
@@ -69,12 +70,12 @@ class Fetcher:
         """
         raise NotImplementedError('_load_data must be defined')
 
-    def _exec(self, cmd=['true']):
+    def _exec(self, cmd='true'):
         """
         Utility method for executing an arbitraty command in a shell
 
-        `cmd` - Command to execute, given as a list
+        `cmd` - Command to execute, given as a string
 
         returns a string of command_output
         """
-        return self.subprocess.check_output(cmd)
+        return self.subprocess.check_output(self.shlex.split(cmd))

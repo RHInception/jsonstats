@@ -1,6 +1,4 @@
-
 import datetime
-
 from FetchStats import Fetcher
 
 
@@ -19,14 +17,13 @@ class RPM(Fetcher):
         self._refresh_time = datetime.datetime.utcnow()
         self._rpms = {}
 
-        # Using a full string instead of a list creates a security issue
-        # when input is accepted.
-        cmd = ['rpm', '-qa', '--queryformat', '"%{NAME} %{VERSION}\n"']
-
+        # _exec will shlex.split will list-ify the cmd
         if key:
-            cmd.append(key)
+            cmd = 'rpm -q --queryformat "%{NAME} %{VERSION}\n" %s' % key
+        else:
+            cmd = 'rpm -qa --queryformat "%{NAME} %{VERSION}\n"'
 
-        for line in self._exec(cmd)[1].split('\n')[:-1]:
+        for line in self._exec(cmd).split('\n')[:-1]:
             (rpm_name, rpm_version) = line.split()
             self._rpms[rpm_name] = rpm_version
 

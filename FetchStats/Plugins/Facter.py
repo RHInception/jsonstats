@@ -1,12 +1,5 @@
 from FetchStats import Fetcher
 
-"""
-TODO:
-
-don't just "raise wtf are you doing"
-"""
-
-
 class Facter(Fetcher):
     import yaml
 
@@ -15,7 +8,7 @@ class Facter(Fetcher):
         self.context = 'facter'
 
     def _load_data(self):
-        output = self._exec(['facter', ' -p', ' --yaml'])
+        output = self._exec('facter -p --yaml')
         self.facts = self.yaml.load(output)
 
     def dump(self):
