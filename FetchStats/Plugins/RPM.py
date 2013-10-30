@@ -19,7 +19,7 @@ class RPM(Fetcher):
 
         # _exec will shlex.split will list-ify the cmd
         if key:
-            cmd = 'rpm -q --queryformat "%{NAME} %{VERSION}\n" %s' % key
+            cmd = 'rpm -q --queryformat "%%{NAME} %%{VERSION}\n" %s' % key
         else:
             cmd = 'rpm -qa --queryformat "%{NAME} %{VERSION}\n"'
 
