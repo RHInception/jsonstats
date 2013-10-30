@@ -4,6 +4,7 @@ import json
 
 import tornado.ioloop
 import tornado.web
+import tornado.httpserver
 
 from FetchStats.Plugins import *
 import FetchStats
@@ -12,7 +13,6 @@ class StatsHandler(tornado.web.RequestHandler):
     """
     Gets and returns the stats.
     """
-
 
     _plugins = FetchStats.Fetcher.get_plugins()
 
@@ -41,7 +41,9 @@ if __name__ == "__main__":
     print "plugins loaded..."
     print "server listening on http://0.0.0.0:8888"
     try:
-        application.listen(8888)
+        server = tornado.httpserver.HTTPServer(application)
+        server.bind(8888)
+        server.start(0)
         tornado.ioloop.IOLoop.instance().start()
     except KeyboardInterrupt:
         print "shutting down..."
