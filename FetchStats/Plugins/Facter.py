@@ -18,11 +18,8 @@ class Facter(Fetcher):
         (ret, output) = self._exec(['facter', ' -p', ' --yaml'])
         self.facts = self.yaml.load(output)
 
-    def dump_json(self, key=None):
-        # if not key:
-        #     return self.json.dumps(self.facts)
-        # elif key in self.result:
-        #     return self.json.dumps(self.facts[key])
-        # else:
-        #     raise "wtf are you doing"
+    def dump(self):
         return self.facts
+
+    def dump_json(self):
+        return self.json.dumps(self.dump())

@@ -47,6 +47,14 @@ class Fetcher:
     import json
     import commands
 
+    def dump(self):
+        """
+        Return a raw datastructure. This return value is collected by
+        the main REST interface and joined with all the other plugins
+        output. Then that final datastructure is dumped as JSON
+        """
+        raise NotImplementedError('dump must be defined')
+
     def dump_json(self, key=None):
         """
         Turn results in to json.
