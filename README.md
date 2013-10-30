@@ -9,6 +9,7 @@
 
 * New fact plugins MUST subclass the `Fetcher` parent class. Example:
 
+    from FetchStats import Fetcher
     class MegaFRObber(Fetcher):
 
 * New fact plugins MUST define the `dump_json` method. This method may
@@ -17,4 +18,3 @@
 
 * New fact plugins MUST define the `_load_data` method. This method
   may be called internally to refresh a given fact plugins cache.
-

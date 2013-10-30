@@ -23,12 +23,10 @@ class StatsHandler(tornado.web.RequestHandler):
         # 2. Execute each (as a coroutine?)
         #     - currently handled during instantiation
 
-        # 3. Return the json all together
-
         for plugin in self._plugins:
             plugin_name = plugin.plugin_name
             result[plugin_name] = plugin.dump_json()
-
+        # 3. Return the json all together
         self.write(json.dumps(result))
 
 
