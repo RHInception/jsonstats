@@ -23,6 +23,7 @@ class RPM(Fetcher):
         **Note**: This takes more than a few seconds!!
         """
         self._load_data()
+        self.plugin_name = 'rpm'
 
     def _load_data(self):
         self._refresh_time = datetime.datetime.utcnow()
@@ -32,4 +33,5 @@ class RPM(Fetcher):
         # poor mans cache, refresh cache in an hour
         if datetime.datetime.utcnow() - datetime.timedelta(hours=1) > self._refresh_time:
             self._load_data()
-        return self.json.dumps(self._rpms)
+#        return self.json.dumps(self._rpms)
+        return self._rpms

@@ -12,15 +12,17 @@ class Facter(Fetcher):
 
     def __init__(self):
         self._load_data()
+        self.plugin_name = 'facter'
 
     def _load_data(self):
         (ret, output) = self._exec(['facter', ' -p', ' --yaml'])
         self.facts = self.yaml.load(output)
 
     def dump_json(self, key=None):
-        if not key:
-            return self.json.dumps(self.facts)
-        elif key in self.result:
-            return self.json.dumps(self.facts[key])
-        else:
-            raise "wtf are you doing"
+        # if not key:
+        #     return self.json.dumps(self.facts)
+        # elif key in self.result:
+        #     return self.json.dumps(self.facts[key])
+        # else:
+        #     raise "wtf are you doing"
+        return self.facts

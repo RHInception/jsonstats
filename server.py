@@ -5,18 +5,31 @@ import json
 import tornado.ioloop
 import tornado.web
 
+from FetchStats.Plugins import *
+import FetchStats
 
 class StatsHandler(tornado.web.RequestHandler):
     """
     Gets and returns the stats.
     """
 
+    _plugins = FetchStats.Fetcher.get_plugins()
+
     def get(self):
-        # TODO:
+        result = {}
         # 1. load modules to run
+        #     - handled in the '... Plugins import *' line
+
         # 2. Execute each (as a coroutine?)
+        #     - currently handled during instantiation
+
         # 3. Return the json all together
-        self.write(json.dumps({'data': 'here'}))
+
+        for plugin in self._plugins:
+            plugin_name = plugin.plugin_name
+            result[plugin_name] = plugin.dump_json()
+
+        self.write(json.dumps(result))
 
 
 application = tornado.web.Application([
