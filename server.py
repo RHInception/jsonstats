@@ -9,6 +9,7 @@ import tornado.httpserver
 from FetchStats.Plugins import *
 import FetchStats
 
+
 class StatsHandler(tornado.web.RequestHandler):
     """
     Gets and returns the stats.

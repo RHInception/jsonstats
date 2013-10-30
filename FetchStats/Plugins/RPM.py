@@ -32,7 +32,8 @@ class RPM(Fetcher):
 
     def dump(self, key=None):
         # poor mans cache, refresh cache in an hour
-        if datetime.datetime.utcnow() - datetime.timedelta(hours=1) > self._refresh_time:
+        if (datetime.datetime.utcnow() -
+                datetime.timedelta(hours=1)) > self._refresh_time:
             self._load_data(key)
         return self._rpms
 
