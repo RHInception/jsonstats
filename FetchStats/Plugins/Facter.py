@@ -1,4 +1,3 @@
-#import FetchStats.Fetcher
 from FetchStats import Fetcher
 
 """
@@ -13,7 +12,6 @@ class Facter(Fetcher):
 
     def __init__(self):
         self._load_data()
-
 
     def _load_data(self):
         (ret, output) = self._exec(['facter', ' -p', ' --yaml'])

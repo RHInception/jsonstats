@@ -1,21 +1,13 @@
-"""
-All fact plugins that ship with $UPSTREAM (that means this project)
-MUST be defined in the `__all__` list. We use this to make loading
-them all dynamically easier
-"""
-
-__all__ = [
-    'RPM',
-    'Facter',
-    ]
-
-
 class PluginMount(type):
     """
     This idea was lifted from
     http://martyalchin.com/2008/jan/10/simple-plugin-framework/
     """
     def __init__(cls, name, bases, attrs):
+        print "Trying to create something new here..."
+        print cls
+        print
+
         if not hasattr(cls, 'plugins'):
             # This branch only executes when processing the mount point itself.
             # So, since this is a new plugin type, not an implementation, this
@@ -28,6 +20,11 @@ class PluginMount(type):
             # track of it later.
             cls.plugins.append(cls)
 
+    def get_plugins(cls, *args, **kwargs):
+        """
+        Returns a list of initialized plugin objects
+        """
+        return [p(*args, **kwargs) for p in cls.plugins]
 
 
 class Fetcher:
@@ -46,11 +43,9 @@ class Fetcher:
 
     - Create a common caching system
     """
-
+    __metaclass__ = PluginMount
     import json
     import commands
-
-    __metaclass__ = PluginMount
 
     def dump_json(self, key=None):
         """
