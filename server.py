@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-import json
-
+try:
+    import json
+except:
+    import simplejson as json
 
 from FetchStats.Plugins import *
 

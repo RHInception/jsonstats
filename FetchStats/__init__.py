@@ -43,9 +43,11 @@ class Fetcher:
     - Create a common caching system
     """
     __metaclass__ = PluginMount
-    import json
-    import subprocess
-    import shlex
+    try:
+        import json
+    except:
+        import simplejson as json
+    import commands
 
     _state = False
 
@@ -81,7 +83,7 @@ class Fetcher:
 
         returns a string of command_output
         """
-        return self.subprocess.check_output(self.shlex.split(cmd))
+        return self.commands.getstatusoutput(cmd)[1]
 
     def _loaded(self, state, msg=None):
         """
