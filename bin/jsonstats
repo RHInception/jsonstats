@@ -5,9 +5,9 @@ try:
 except:
     import simplejson as json
 
-from FetchStats.Plugins import *
+from JsonStats.FetchStats.Plugins import *
 
-import FetchStats
+import JsonStats.FetchStats
 
 # TODO: logging!
 
@@ -18,7 +18,7 @@ class StatsApp(object):
     """
 
     # load modules to run
-    _plugins = FetchStats.Fetcher.get_plugins()
+    _plugins = JsonStats.FetchStats.Fetcher.get_plugins()
 
     def __call__(self, environ, start_response):
         result = {}

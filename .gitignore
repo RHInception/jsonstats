@@ -1,2 +1,6 @@
 *~
 *.py[co]
+MANIFEST
+build
+dist
+rpm-build

@@ -1,4 +1,4 @@
-from FetchStats import Fetcher
+from JsonStats.FetchStats import Fetcher
 
 class Facter(Fetcher):
     import yaml

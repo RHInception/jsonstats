@@ -10,16 +10,13 @@ setup(name='jsonstats',
       maintainer_email='tbielawa@redhat.com',
       url='https://github.com/tbielawa/restfulstatsjson',
       license='MIT',
-      # package_dir={ 'juicer': 'juicer' },
-      # packages=[
-      #    'juicer',
-      #    'juicer.juicer',
-      #    'juicer.admin',
-      #    'juicer.common',
-      #    'juicer.utils',
-      # ],
-      # scripts=[
-      #    'bin/juicer',
-      #    'bin/juicer-admin'
-      # ]
+      package_dir={ 'jsonstats': 'JsonStats' },
+      packages=[
+        'JsonStats',
+        'JsonStats.FetchStats',
+        'JsonStats.FetchStats.Plugins'
+        ],
+      scripts=[
+        'bin/jsonstats',
+        ],
 )

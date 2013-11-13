@@ -4,7 +4,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 %endif
 
 Name:          jsonstats
-Release:       2%{?dist}
+Release:       1%{?dist}
 Summary:       Client for exposing system information over a REST interface
 Version:       0.5.0
 
@@ -14,6 +14,7 @@ Source0:       %{name}-%{version}.tar.gz
 Url:           https://github.com/tbielawa/restfulstatsjson
 
 BuildArch:     noarch
+Requires:      PyYAML
 BuildRequires: python2-devel
 
 %description
@@ -45,7 +46,12 @@ rm -rf $RPM_BUILD_ROOT
 # files for 'jsonstats' package
 %files
 %defattr(-,root,root)
-%{python_sitelib}/jsonstats
+%{python_sitelib}/JsonStats
+%if 0%{?rhel} >= 5
+# nothing to do on python2.4 boxes (like RHEL5 stock)
+%else
+%{python_sitelib}/jsonstats*-info
+%endif
 %{_bindir}/jsonstats
 
 
