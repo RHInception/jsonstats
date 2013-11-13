@@ -12,7 +12,11 @@ class Facter(Fetcher):
             output = self._exec('facter -p --yaml')
             self.facts = self.yaml.load(output)
             self._loaded(True)
+        except OSError, e:
+            # Couldn't find facter command, most likely
+            self._loaded(False, msg=str(e))
         except Exception, e:
+            # Something else did indeed go wrong
             self._loaded(False, msg=str(e))
 
     def dump(self):
