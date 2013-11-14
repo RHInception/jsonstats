@@ -37,8 +37,8 @@ if __name__ == "__main__":
     print "plugins loaded..."
     print "server listening on http://0.0.0.0:8888"
     try:
-        from JsonStats.wsgiref.simple_server import make_server
-        httpd = make_server('', 8888, StatsApp())
+        import JsonStats.wsgiref.simple_server as wsgiref
+        httpd = wsgiref.make_server('', 8888, StatsApp())
         httpd.serve_forever()
     except KeyboardInterrupt:
         print "shutting down..."
