@@ -13,6 +13,7 @@ setup(name='jsonstats',
       package_dir={ 'jsonstats': 'JsonStats' },
       packages=[
         'JsonStats',
+        'JsonStats.wsgiref',
         'JsonStats.FetchStats',
         'JsonStats.FetchStats.Plugins'
         ],
