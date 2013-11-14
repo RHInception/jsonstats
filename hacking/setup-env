@@ -1,6 +1,6 @@
 # -*- mode: shell-script -*-
 
-PREFIX_PYTHONPATH="`pwd`:`pwd`/FetchStats/:`pwd`/FetchStats/"
+PREFIX_PYTHONPATH="`pwd`:`pwd`/JsonStats/:`pwd`/JsonStats/"
 PREFIX_PATH="`pwd`/bin"
 
 echo "Prefixing PYTHONPATH with $PREFIX_PYTHONPATH"
