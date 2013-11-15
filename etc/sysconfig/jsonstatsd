@@ -1,0 +1,12 @@
+######################################################################
+# Listen on all interfaces by default. You might also enjoy: 127.0.0.1
+# to just listen locally
+INTERFACE=0.0.0.0
+
+######################################################################
+# Port to listen on
+PORT=8008
+
+######################################################################
+# Now put it all together for the nice people at home
+OPTIONS="--listen ${INTERFACE} --port ${PORT}"

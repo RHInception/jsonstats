@@ -3,7 +3,7 @@ RPMSPEC := $(RPMSPECDIR)/jsonstats.spec
 clean:
 	@find . -type f -regex ".*\.py[co]$$" -delete
 	@find . -type f \( -name "*~" -or -name "#*" \) -delete
-	@rm -fR build dist
+	@rm -fR build dist rpm-build
 
 sdist: clean
 	python setup.py sdist -t MANIFEST.in

@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+# chkconfig: - 20 80
+# /etc/rc.d/init.d/jsonstatsd
+# description: System stats over JSON (it's RESTful!)
+# processname: jsonstatsd
+# config: /etc/sysconfig/jsonstatsd
+# pidfile: /var/run/jsonstatsd.pid
+#
+#
+# Source function library
+
+. /etc/rc.d/init.d/functions
+
+app_name="jsonstatsd"
+app=/usr/bin/jsonstatsd
+pidfile="/var/run/jsonstatsd.pid"
+conf=/etc/sysconfig/jsonstatsd
+RETVAL=0
+
+[ -f ${conf} ] && . ${conf}
+
+start() {
+    echo -n $"Starting $app_name: "
+    pgrep -f ${app} > /dev/null
+    RUNNING=$?
+    if [ $RUNNING -eq 0 ]; then
+        echo "[FAILED]"
+        echo
+        echo "Reason: ${app_name} is already running."
+        RETVAL=1
+        exit 1;
+    fi
+
+    daemon --pidfile=${pidfile} "${app} ${OPTIONS} >/dev/null 2>&1 &"
+    RETVAL=$?
+    pgrep -f ${app} > ${pidfile}
+    echo
+    [ $RETVAL -eq 0 ] && touch /var/lock/subsys/jsonstatsd
+}
+
+
+stop() {
+    echo -n $"Stopping $app_name: "
+    kill `cat ${pidfile}`
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/jsonstatsd $pidfile
+}
+
+restart() {
+    status -p ${pidfile} $app && stop
+    start
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        status -p ${pidfile} $app && stop
+        ;;
+    status)
+        status -p ${pidfile} $app
+        RETVAL=$?
+        ;;
+    restart)
+        restart
+        ;;
+#     condrestart)
+#         if $(status -p ${pidfile} ${app}); then
+# 	    restart
+# 	fi
+#         ;;
+    *)
+        echo "Usage: jsonstatsd {start|stop|status|restart}"
+        exit 1
+        ;;
+esac

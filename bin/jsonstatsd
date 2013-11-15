@@ -1,16 +1,13 @@
 #!/usr/bin/env python
-
 try:
     import json
 except:
     import simplejson as json
 
 from JsonStats.FetchStats.Plugins import *
-
 import JsonStats.FetchStats
 
 # TODO: logging!
-
 
 class StatsApp(object):
     """
@@ -34,11 +31,22 @@ class StatsApp(object):
 
 
 if __name__ == "__main__":
+    # Using optparse since argparse is not available in 2.5
+    from optparse import OptionParser
+    parser = OptionParser()
+    parser.add_option('-p', '--port', dest='port', default=8008,
+                      help='Port to listen on. (Default: 8008)')
+    parser.add_option(
+        '-l', '--listen', dest='listen', default='0.0.0.0',
+        help='Address to listen on. (Default: 0.0.0.0)')
+
+    (options, args) = parser.parse_args()
+
     print "plugins loaded..."
-    print "server listening on http://0.0.0.0:8888"
+    print "server listening on http://%s:%s" % (options.listen, int(options.port))
     try:
         import JsonStats.wsgiref.simple_server as wsgiref
-        httpd = wsgiref.make_server('', 8888, StatsApp())
+        httpd = wsgiref.make_server(options.listen, int(options.port), StatsApp())
         httpd.serve_forever()
     except KeyboardInterrupt:
         print "shutting down..."
