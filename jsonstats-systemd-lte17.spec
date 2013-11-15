@@ -16,10 +16,24 @@ Url:             https://github.com/tbielawa/restfulstatsjson
 
 BuildArch:       noarch
 Requires:        PyYAML
-Requires(post):  chkconfig
-Requires(preun): chkconfig
-Requires(preun): initscripts
 BuildRequires:   python2-devel
+
+######################################################
+######################################################
+# http://fedoraproject.org/wiki/Packaging:ScriptletSnippets#Macroized_scriptlets_.28Fedora_18.2B.29
+Requires(post):  systemd
+Requires(preun): systemd
+Requires(postun):systemd
+BuildRequires:   systemd
+
+%post
+%systemd_post %{_name}.service
+
+%preun
+%systemd_preun %{_name}.service
+
+%postun
+%systemd_postun_with_restart %{_name}.service
 
 
 
@@ -38,37 +52,9 @@ serializable python datastructure.
 
 %install
 %{__python} setup.py install -O1 --root=$RPM_BUILD_ROOT
-# mkdir -p $RPM_BUILD_ROOT/%{_mandir}/{man1,man5}/
-# cp -v docs/man/man1/*.1 $RPM_BUILD_ROOT/%{_mandir}/man1/
-# cp -v docs/man/man5/*.5 $RPM_BUILD_ROOT/%{_mandir}/man5/
-# mkdir -p $RPM_BUILD_ROOT/%{_datadir}/juicer
-# cp -vr share/juicer/completions $RPM_BUILD_ROOT/%{_datadir}/juicer/
-# cp -vr share/juicer/juicer.conf $RPM_BUILD_ROOT/%{_datadir}/juicer/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
-# @@@@@**************@@@@@@@@@@@@@*************@@@@@@@@@@**********
-# @@@@@******** NEED TO MAKE CONDITIONAL, SysV/Systemd @@**********
-# @@@@@**************@@@@@@@@@@@@@*************@@@@@@@@@@**********
-
-
-######################################################################
-# New stuff
-%post
-/sbin/chkconfig --add %{_name}
-
-######################################################################
-# Get outta here
-%preun
-if [ $1 -eq 0 ] ; then
-    /sbin/service %{_name} stop >/dev/null 2>&1
-    /sbin/chkconfig --del %{_name}
-fi
-# @@@@@**************@@@@@@@@@@@@@*************@@@@@@@@@@**********
-# @@@@@**** END NEED TO MAKE CONDITIONAL, SysV/Systemd @@**********
-# @@@@@**************@@@@@@@@@@@@@*************@@@@@@@@@@**********
-
 
 
 ######################################################################
@@ -83,11 +69,9 @@ fi
 %endif
 %{_bindir}/jsonstats*
 
-# @@@***@@@***@@@ conditional for SysV
-/etc/init.d/%{_name}
-# @@@***@@@***@@@ end conditional for SysV
 
 %config(noreplace)/etc/sysconfig/%{_name}
+%{_unitdir}/%{_name}.service
 ######################################################################
 %changelog
 * Mon Nov  4 2013 Tim Bielawa <tbielawa@redhat.com> - 0.5.0-2

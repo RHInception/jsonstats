@@ -1,0 +1,289 @@
+#!/usr/bin/env python
+
+# This daemonizing recipe was adopted from "Creating a daemon the
+# Python way (Python recipe)", Copyright (C) 2005 Chad J. Schroeder
+#
+# http://code.activestate.com/recipes/278731-creating-a-daemon-the-python-way/
+#
+# __version__ = "0.2"
+
+print "OMFG DID THIS EVEN DO ANYTHING?????????"
+
+
+# f = open('/tmp/jsonstatsd', 'a')
+# f.write("==================================\n")
+# f.write("PRE-FUNCTION DEFS\n\n")
+# f.flush()
+# f.close()
+
+# # Standard Python modules.
+# import os               # Miscellaneous OS interfaces.
+# import sys              # System-specific parameters and functions.
+
+# # Default daemon parameters.
+# # File mode creation mask of the daemon.
+# UMASK = 0
+
+# # Default working directory for the daemon.
+# WORKDIR = "/"
+
+# # Default maximum for the number of available file descriptors.
+# MAXFD = 1024
+
+# # The standard I/O file descriptors are redirected to /dev/null by default.
+# if (hasattr(os, "devnull")):
+#    REDIRECT_TO = os.devnull
+# else:
+#    REDIRECT_TO = "/dev/null"
+
+# def createDaemon():
+#    """Detach a process from the controlling terminal and run it in the
+#    background as a daemon.
+#    """
+
+#    f = open('/tmp/jsonstatsd', 'a')
+#    f.write("==================================\n")
+#    f.write("BEGINNING OF createDaemon\n\n")
+#    f.flush()
+#    f.close()
+   
+
+#    try:
+#       # Fork a child process so the parent can exit.  This returns control to
+#       # the command-line or shell.  It also guarantees that the child will not
+#       # be a process group leader, since the child receives a new process ID
+#       # and inherits the parent's process group ID.  This step is required
+#       # to insure that the next call to os.setsid is successful.
+#       pid = os.fork()
+
+#       #mypid = os.getpid()
+#       f = open('/tmp/jsonstatsd', 'a')
+#       f.write("==================================\n")
+#       f.write("DIS MAI PID: %d\n\n" % mypid)
+#       f.flush()
+#       f.close()
+
+
+#    except OSError, e:
+#       raise Exception, "%s [%d]" % (e.strerror, e.errno)
+
+#    if (pid == 0):	# The first child.
+#       # To become the session leader of this new session and the process group
+#       # leader of the new process group, we call os.setsid().  The process is
+#       # also guaranteed not to have a controlling terminal.
+#       os.setsid()
+
+
+#       try:
+#          # Fork a second child and exit immediately to prevent zombies.  This
+#          # causes the second child process to be orphaned, making the init
+#          # process responsible for its cleanup.  And, since the first child is
+#          # a session leader without a controlling terminal, it's possible for
+#          # it to acquire one by opening a terminal in the future (System V-
+#          # based systems).  This second fork guarantees that the child is no
+#          # longer a session leader, preventing the daemon from ever acquiring
+#          # a controlling terminal.
+#          pid = os.fork()	# Fork a second child.
+
+#          f = open('/tmp/jsonstatsd', 'a')
+#          f.write("==================================\n")
+#          f.write("DIS MAI PID: %d\n\n" % mypid)
+#          f.flush()
+#          f.close()
+
+#       except OSError, e:
+#          raise Exception, "%s [%d]" % (e.strerror, e.errno)
+
+#       if (pid == 0):	# The second child.
+#          # Since the current working directory may be a mounted filesystem, we
+#          # avoid the issue of not being able to unmount the filesystem at
+#          # shutdown time by changing it to the root directory.
+#          os.chdir(WORKDIR)
+#          # We probably don't want the file mode creation mask inherited from
+#          # the parent, so we give the child complete control over permissions.
+#          os.umask(UMASK)
+
+#          mypid = os.getpid()
+#          f = open('/tmp/jsonstatsd', 'a')
+#          f.write("==================================\n")
+#          f.write("DIS MAI PID: %d\n\n" % mypid)
+#          f.flush()
+#          f.close()
+         
+
+#       else:
+#          # exit() or _exit()?  See below.
+#          os._exit(0)	# Exit parent (the first child) of the second child.
+#    else:
+#       # exit() or _exit()?
+#       # _exit is like exit(), but it doesn't call any functions registered
+#       # with atexit (and on_exit) or any registered signal handlers.  It also
+#       # closes any open file descriptors.  Using exit() may cause all stdio
+#       # streams to be flushed twice and any temporary files may be unexpectedly
+#       # removed.  It's therefore recommended that child branches of a fork()
+#       # and the parent branch(es) of a daemon use _exit().
+#       os._exit(0)	# Exit parent of the first child.
+
+#    # Close all open file descriptors.  This prevents the child from keeping
+#    # open any file descriptors inherited from the parent.  There is a variety
+#    # of methods to accomplish this task.  Three are listed below.
+#    #
+#    # Try the system configuration variable, SC_OPEN_MAX, to obtain the maximum
+#    # number of open file descriptors to close.  If it doesn't exists, use
+#    # the default value (configurable).
+#    #
+#    # try:
+#    #    maxfd = os.sysconf("SC_OPEN_MAX")
+#    # except (AttributeError, ValueError):
+#    #    maxfd = MAXFD
+#    #
+#    # OR
+#    #
+#    # if (os.sysconf_names.has_key("SC_OPEN_MAX")):
+#    #    maxfd = os.sysconf("SC_OPEN_MAX")
+#    # else:
+#    #    maxfd = MAXFD
+#    #
+#    # OR
+#    #
+#    # Use the getrlimit method to retrieve the maximum file descriptor number
+#    # that can be opened by this process.  If there is not limit on the
+#    # resource, use the default value.
+#    #
+#    import resource		# Resource usage information.
+#    maxfd = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
+#    if (maxfd == resource.RLIM_INFINITY):
+#       maxfd = MAXFD
+
+#    # Iterate through and close all file descriptors.
+#    for fd in range(0, maxfd):
+#       try:
+#          os.close(fd)
+#       except OSError:	# ERROR, fd wasn't open to begin with (ignored)
+#          pass
+
+#    # Redirect the standard I/O file descriptors to the specified file.  Since
+#    # the daemon has no controlling terminal, most daemons redirect stdin,
+#    # stdout, and stderr to /dev/null.  This is done to prevent side-effects
+#    # from reads and writes to the standard I/O file descriptors.
+
+#    # This call to open is guaranteed to return the lowest file descriptor,
+#    # which will be 0 (stdin), since it was closed above.
+#    os.open(REDIRECT_TO, os.O_RDWR)	# standard input (0)
+
+#    # Duplicate standard input to standard output and standard error.
+#    #
+#    # RH Note: stdout is left untouched so that the wsgiref can still return data
+#    #
+#    # os.dup2(0, 1)			# standard output (1)
+#    os.dup2(0, 2)			# standard error (2)
+
+#    f = open('/tmp/jsonstatsd', 'a')
+#    f.write("==================================\n")
+#    f.write("PRE-createDaemon return(0)\n\n")
+#    f.flush()
+#    f.close()
+   
+
+
+#    return(0)
+
+
+# f = open('/tmp/jsonstatsd', 'a')
+# f.write("==================================\n")
+# f.write("POST-FUNCTION DEFS\n\n")
+# f.flush()
+# f.close()
+
+
+
+######################################################################
+######################################################################
+######################################################################
+
+try:
+    import json
+except:
+    import simplejson as json
+
+from JsonStats.FetchStats.Plugins import *
+
+import JsonStats.FetchStats
+
+# TODO: logging!
+
+
+class StatsApp(object):
+    """
+    Gets and returns the stats.
+    """
+
+    # load modules to run
+    _plugins = JsonStats.FetchStats.Fetcher.get_plugins()
+
+    def __call__(self, environ, start_response):
+        result = {}
+
+        # Execute each plugin
+        for plugin in self._plugins:
+            context = plugin.context
+            result[context] = plugin.dump()
+
+        # Return the json all together
+        start_response("200 OK", [("Content-Type", "application/json")])
+        return json.dumps(result)
+
+# f = open('/tmp/jsonstatsd', 'a')
+# f.write("==================================\n")
+# f.write("POST-CLASS DEF\n\n")
+# f.flush()
+# f.close()
+
+
+
+
+######################################################################
+######################################################################
+######################################################################
+
+if __name__ == "__main__":
+   # f = open('/tmp/jsonstatsd', 'a')
+   # f.write("==================================\n")
+   # f.write("PRE createDaemon\n\n")
+   # f.flush()
+   # f.close()
+
+   # try:
+   #retCode = createDaemon()
+   # except Exception, e:
+   #    print str(e)
+   #    f = open('/tmp/jsonstatsd', 'a')
+   #    f.write("==================================\n")
+   #    f.write(str(e))
+   #    f.flush()
+   #    f.close()
+      
+
+   # The code, as is, will create a new file in the root directory, when
+   # executed with superuser privileges.  The file will contain the following
+   # daemon related process parameters: return code, process ID, parent
+   # process group ID, session ID, user ID, effective user ID, real group ID,
+   # and the effective group ID.  Notice the relationship between the daemon's
+   # process ID, process group ID, and its parent's process ID.
+
+   # f = open('/tmp/jsonstatsd', 'a')
+   # f.write("==================================\n")
+   # f.write("WHAT THE HELL IS THIS DOING????????????//\n\n")
+   # f.flush()
+   # f.close()
+
+
+   print "plugins loaded..."
+   print "server listening on http://0.0.0.0:8888"
+   try:
+      import JsonStats.wsgiref.simple_server as wsgiref
+      httpd = wsgiref.make_server('', 8888, StatsApp())
+      httpd.serve_forever()
+   except KeyboardInterrupt:
+      print "shutting down..."
+      raise SystemExit(0)

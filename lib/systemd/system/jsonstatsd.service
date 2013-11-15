@@ -1,0 +1,10 @@
+[Unit]
+Description=JsonStatsd service
+After=syslog.target network.target auditd.service
+
+[Service]
+EnvironmentFile=/etc/sysconfig/jsonstatsd
+ExecStart=/usr/bin/jsonstatsd
+
+[Install]
+WantedBy=multi-user.target

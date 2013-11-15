@@ -1,5 +1,5 @@
 RPMSPECDIR := .
-RPMSPEC := $(RPMSPECDIR)/jsonstats.spec
+RPMSPEC := $(RPMSPECDIR)/jsonstats-systemd-lte17.spec
 clean:
 	@find . -type f -regex ".*\.py[co]$$" -delete
 	@find . -type f \( -name "*~" -or -name "#*" \) -delete
