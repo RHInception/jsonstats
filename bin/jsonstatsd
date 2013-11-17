@@ -11,12 +11,15 @@ import logging.handlers
 import re
 import urllib
 
+
+######################################################################
+# Utility functions for the pseudo-wsgi app
 def make_app():
     """
     Creates a WSGI application for use.
     """
     return Router({
-        '^/$': StatsApp(),
+        '.*': StatsApp(),
     })
 
 
@@ -215,14 +218,14 @@ if __name__ == "__main__":
     parser.add_option(
         '-l', '--listen', dest='listen', default='0.0.0.0',
         help='Address to listen on. (Default: 0.0.0.0)')
+    parser.add_option(
+        '--logdir', dest='logdir', default='./logs/',
+        help='Directory to log access requests to. (Default: ./logs/)')
 
     (options, args) = parser.parse_args()
 
     print "plugins loaded..."
     try:
-        # import JsonStats.wsgiref.simple_server as wsgiref
-        # httpd = wsgiref.make_server(options.listen, int(options.port), StatsApp())
-        # httpd.serve_forever()
         # Fall back to old school container if on 2.4.x
         if py_version >= '2.4.0' and py_version < '2.5.0':
             run_old_server(options.listen, int(options.port))

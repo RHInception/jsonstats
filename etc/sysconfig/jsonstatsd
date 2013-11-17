@@ -8,5 +8,9 @@ INTERFACE=0.0.0.0
 PORT=8008
 
 ######################################################################
+# Customize the logging directory
+LOGDIR=/var/log/jsonstatsd
+
+######################################################################
 # Now put it all together for the nice people at home
-OPTIONS="--listen ${INTERFACE} --port ${PORT}"
+OPTIONS="--listen ${INTERFACE} --port ${PORT} --logdir ${LOGDIR}"
