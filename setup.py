@@ -11,11 +11,11 @@ from distutils.core import setup
 # Lets assume you're running python 2.x.y right now. We'll handle python 3 later
 #if py_major == 2:
 if int(py_minor) > 5:
-    # Use the new hottness
+    # Use the new hotness
     (distname, version, id) = platform.linux_distribution()
 else:
     # Fall back
-    (distname, version, id)= platform.dist()
+    (distname, version, id) = platform.dist()
 
 # Determine which boot system we're targeting while building the RPM
 #
@@ -42,12 +42,12 @@ else:
     boot_system = 'sysv'
 
 datum = {
-    'systemd': ('/usr/lib/systemd/system', ['lib/systemd/system/jsonstatsd.service',]),
-    'sysv': ('/etc/init.d', ['etc/init.d/jsonstatsd',]),
+    'systemd': ('/usr/lib/systemd/system', ['lib/systemd/system/jsonstatsd.service', ]),
+    'sysv': ('/etc/init.d', ['etc/init.d/jsonstatsd', ]),
 }
 
 final_data_files = [
-    ('/etc/sysconfig', ['etc/sysconfig/jsonstatsd',]),
+    ('/etc/sysconfig', ['etc/sysconfig/jsonstatsd', ]),
     datum[boot_system],
 ]
 
@@ -59,7 +59,7 @@ setup(name='jsonstats',
       maintainer_email='tbielawa@redhat.com',
       url='https://github.com/tbielawa/restfulstatsjson',
       license='MIT',
-      package_dir={ 'jsonstats': 'JsonStats' },
+      package_dir={'jsonstats': 'JsonStats'},
       packages=[
         'JsonStats',
         'JsonStats.wsgiref',
@@ -69,5 +69,5 @@ setup(name='jsonstats',
       scripts=[
         'bin/jsonstatsd',
         ],
-      data_files = final_data_files
+      data_files=final_data_files,
 )
