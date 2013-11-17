@@ -28,7 +28,7 @@ def create_logger(name, filename,
     """
     Creates a logger instance.
     """
-    logfile = os.path.sep.join([os.path.realpath('/var/log/jsonstatsd'), filename])
+    logfile = os.path.sep.join([os.path.realpath(os.environ['JSONSTATS_LOG_DIR']), filename])
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
     if not os.path.exists(os.path.dirname(logfile)):
@@ -224,7 +224,8 @@ if __name__ == "__main__":
 
     (options, args) = parser.parse_args()
 
-    print "plugins loaded..."
+    os.environ['JSONSTATS_LOG_DIR'] = options.logdir
+
     try:
         # Fall back to old school container if on 2.4.x
         if py_version >= '2.4.0' and py_version < '2.5.0':
