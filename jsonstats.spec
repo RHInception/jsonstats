@@ -180,6 +180,7 @@ serializable python datastructure.
 
 %install
 %{__python} setup.py install -O1 --root=$RPM_BUILD_ROOT
+%{__mkdir_p} $RPM_BUILD_ROOT%{_localstatedir}/log/%{_name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -192,6 +193,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{_name}
 %{init_script}
 %config(noreplace)/etc/sysconfig/%{_name}
+%attr(0755,root,root) %dir %{_localstatedir}/log/%{_name}
 
 ######################################################################
 

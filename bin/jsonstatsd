@@ -3,12 +3,184 @@ try:
     import json
 except:
     import simplejson as json
-
+import os
 from JsonStats.FetchStats.Plugins import *
 import JsonStats.FetchStats
+import logging
+import logging.handlers
+import re
+import urllib
 
-# TODO: logging!
+def make_app():
+    """
+    Creates a WSGI application for use.
+    """
+    return Router({
+        '^/$': StatsApp(),
+    })
 
+
+def create_logger(name, filename,
+                  format='%(asctime)s - %(levelname)s - %(message)s'):
+    """
+    Creates a logger instance.
+    """
+    logfile = os.path.sep.join([os.path.realpath('/var/log/jsonstatsd'), filename])
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.INFO)
+    if not os.path.exists(os.path.dirname(logfile)):
+        os.makedirs(os.path.dirname(logfile))
+    handler = logging.handlers.TimedRotatingFileHandler(
+        logfile, 'd')
+    handler.setLevel(logging.INFO)
+    handler.setFormatter(logging.Formatter(format))
+    logger.addHandler(handler)
+    return logger
+
+
+def run_server(host, port):
+    """
+    If the server is called directly then serve via wsgiref.
+    """
+    from wsgiref.simple_server import make_server, WSGIRequestHandler
+
+    logger = create_logger(
+        'jsonstats_access', 'jsonstats_access.log', '%(message)s')
+
+    class JsonstatsHandler(WSGIRequestHandler):
+
+        def log_message(self, format, *args):
+            logger.info("%s - - [%s] %s" % (
+                self.address_string(),
+                self.log_date_time_string(),
+                format % args))
+
+    application = make_app()
+
+    httpd = make_server(
+        host, int(port), application,
+        handler_class=JsonstatsHandler)
+    print "server listening on http://%s:%s" % (host, port)
+    httpd.serve_forever()
+
+
+def run_old_server(host, port):
+    """
+    Code for running the old server.
+    """
+
+    import urllib
+    from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+
+    def create_wsgi_wrapper(wsgi_app):
+        """
+        Wraps a WSGI application for use.
+        """
+
+        class WSGIWrapperHandler(BaseHTTPRequestHandler):
+
+            def start_response(self, status, headers):
+                """
+                A fake WSGI start_response method.
+                """
+                # Handle status info
+                # TODO: Handle network errors better.
+                status_data = status.split(' ')
+                if len(status_data) > 1:
+                    self.send_response(int(status_data[0]), status_data[1])
+                else:
+                    self.send_response(int(status_data[0]))
+                # Iterate over headers and send them out
+                for name, value in headers:
+                    self.send_header(name, value)
+                self.end_headers()
+
+            def handle(self):
+                """
+                Overrides handle so that the environ is set.
+                """
+                self.environ = self.server._environ.copy()
+                BaseHTTPRequestHandler.handle(self)
+
+            def do_GET(self):
+                """
+                Since we only do GET we only need to define do_GET.
+                """
+                if '?' in self.path:
+                    path, query = self.path.split('?', 1)
+                else:
+                    path, query = (self.path, '')
+
+                self.environ['QUERY_STRING'] = query
+                self.environ['PATH_INFO'] = urllib.unquote(path)
+
+                for chunk in wsgi_app(self.environ, self.start_response):
+                    self.wfile.write(chunk)
+
+        return WSGIWrapperHandler
+
+    class WSGILiteServer(HTTPServer):
+        """
+        Not 100% WSGI compliant but enough for what we need.
+        """
+
+        def __init__(self, *args, **kwargs):
+            """
+            Creates an instance of a fake WSGI server.
+            """
+            HTTPServer.__init__(self, *args, **kwargs)
+            self._environ = {
+                'SERVER_NAME': self.server_name,
+                'GATEWAY_INTERFACE': 'CGI/1.1',
+                'SERVER_PORT': str(self.server_port),
+                'REMOTE_HOST': '',
+            }
+
+    server = WSGILiteServer((host, port), create_wsgi_wrapper(make_app()))
+    print "server listening on http://%s:%s" % (host, port)
+    server.serve_forever()
+
+
+######################################################################
+class Router(object):
+    """
+    URL Router.
+    """
+
+    def __init__(self, rules):
+        """
+        Creates an application URI router.
+
+        rules is a dictionary defining uri: WSGIApplication
+        """
+        self._rules = {}
+        for uri, app in rules.items():
+            self._rules[uri] = {'app': app, 'regex': re.compile(uri)}
+
+    def __call__(self, environ, start_response):
+        """
+        Callable which handles the actual routing in a WSGI structured way.
+        """
+        # If the path exists then pass control to the wsgi application
+        if environ['PATH_INFO'] in self._rules.keys():
+            return self._rules[environ['PATH_INFO']]['app'].__call__(
+                environ, start_response)
+
+        # If the path matches the regex then pass control to the wsgi app
+        for uri, data in self._rules.items():
+            # skip '' because it would always match
+            if uri == '':
+                continue
+            if data['regex'].match(environ['PATH_INFO']):
+                kwargs = data['regex'].match(environ['PATH_INFO']).groupdict()
+                return data['app'].__call__(environ, start_response, **kwargs)
+
+        # Otherwise 404
+        start_response("404 File Not Found", [("Content-Type", "text/html")])
+        return "404 File Not Found."
+
+
+######################################################################
 class StatsApp(object):
     """
     Gets and returns the stats.
@@ -30,7 +202,11 @@ class StatsApp(object):
         return json.dumps(result)
 
 
+######################################################################
 if __name__ == "__main__":
+    import platform
+    py_version = platform.python_version()
+
     # Using optparse since argparse is not available in 2.5
     from optparse import OptionParser
     parser = OptionParser()
@@ -43,11 +219,19 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
 
     print "plugins loaded..."
-    print "server listening on http://%s:%s" % (options.listen, int(options.port))
     try:
-        import JsonStats.wsgiref.simple_server as wsgiref
-        httpd = wsgiref.make_server(options.listen, int(options.port), StatsApp())
-        httpd.serve_forever()
+        # import JsonStats.wsgiref.simple_server as wsgiref
+        # httpd = wsgiref.make_server(options.listen, int(options.port), StatsApp())
+        # httpd.serve_forever()
+        # Fall back to old school container if on 2.4.x
+        if py_version >= '2.4.0' and py_version < '2.5.0':
+            run_old_server(options.listen, int(options.port))
+        # Else use the builtin wsgi container
+        elif py_version >= '2.5.0':
+            run_server(options.listen, int(options.port))
+        else:
+            print 'Untested Python version in use: %s' % py_version
+            raise SystemExit(1)
     except KeyboardInterrupt:
         print "shutting down..."
         raise SystemExit(0)
