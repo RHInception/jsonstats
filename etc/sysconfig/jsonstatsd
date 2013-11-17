@@ -10,3 +10,7 @@ PORT=8008
 ######################################################################
 # Customize the logging directory
 LOGDIR=/var/log/jsonstatsd
+
+######################################################################
+# Single line with all options for the SysV init script
+OPTIONS="--listen $INTERFACE --port $PORT --logdir $LOGDIR"
