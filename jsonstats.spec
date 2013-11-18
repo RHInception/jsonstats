@@ -93,9 +93,13 @@ BuildRequires:    systemd
 
 ######################################################################
 # And this ends our *Requires madness. Let's set up the proper
-# pre/post script handlers for registering the jsonstatsd service with
-# the system init
+# pre/post script handlers for creating the jsonstatsd user and
+# registering the service with the system init
 ######################################################################
+
+%pre
+%{_sbindir}/useradd --no-create-home --shell %{_sbindir}/nologin --system %{name}d
+
 
 ######################################################################
 # BEGIN SysV
@@ -109,6 +113,7 @@ BuildRequires:    systemd
 if [ $1 -eq 0 ] ; then
     /sbin/service %{_name} stop >/dev/null 2>&1
     /sbin/chkconfig --del %{_name}
+    %{_sbindir}/userdel -r %{_name} > /dev/null 2>&1
 fi
 
 %postun
@@ -136,6 +141,7 @@ if [ $1 -eq 0 ] ; then
     # Package removal, not upgrade
     /bin/systemctl --no-reload disable %{_name}.service > /dev/null 2>&1 || :
     /bin/systemctl stop %{_name}.service > /dev/null 2>&1 || :
+    %{_sbindir}/userdel -r %{_name} > /dev/null 2>&1
 fi
 
 %postun
@@ -158,6 +164,7 @@ fi
 
 %preun
 %systemd_preun %{_name}.service
+%{_sbindir}/userdel -r %{_name} > /dev/null 2>&1
 
 %postun
 %systemd_postun_with_restart %{_name}.service
@@ -195,7 +202,7 @@ rm -rf $RPM_BUILD_ROOT
 %{init_script}
 %config(noreplace)/etc/sysconfig/%{_name}
 %if 0%{?python_minor_version} > 4
-%attr(0755,root,root) %dir %{_localstatedir}/log/%{_name}
+%attr(0755,jsonstatsd,jsonstatsd) %dir %{_localstatedir}/log/%{_name}
 %endif
 
 ######################################################################

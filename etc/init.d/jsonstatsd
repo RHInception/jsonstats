@@ -32,7 +32,7 @@ start() {
         exit 1;
     fi
 
-    daemon --pidfile=${pidfile} "${app} ${OPTIONS} >/dev/null 2>&1 &"
+    daemon --user jsonstatsd --pidfile=${pidfile} "${app} ${OPTIONS} >/dev/null 2>&1 &"
     RETVAL=$?
     pgrep -f ${app} > ${pidfile}
     echo
