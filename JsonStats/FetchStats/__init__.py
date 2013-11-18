@@ -50,6 +50,7 @@ class Fetcher:
     import commands
 
     _state = False
+    context = 'Fetcher'
 
     def dump(self, key=None):
         """
