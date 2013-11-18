@@ -1,5 +1,15 @@
 RPMSPECDIR := .
 RPMSPEC := $(RPMSPECDIR)/jsonstats.spec
+
+tests: unittests pep8 pyflakes
+	:
+
+unittests:
+	@echo "#############################################"
+	@echo "# Running Unit Tests"
+	@echo "#############################################"
+	nosetests -v
+
 clean:
 	@find . -type f -regex ".*\.py[co]$$" -delete
 	@find . -type f \( -name "*~" -or -name "#*" \) -delete
@@ -9,8 +19,7 @@ pep8:
 	@echo "#############################################"
 	@echo "# Running PEP8 Compliance Tests"
 	@echo "#############################################"
-# --ignore=E501,E221,W291,W391,E302,E251,E203,W293,E231,E303,E201,E225,E261
-	pep8 --exclude="wsgiref/" --ignore=E501 -r JsonStats/ bin/ setup.py
+	pep8 --ignore=E501 -r JsonStats/ bin/ setup.py
 
 pyflakes:
 	@echo "#############################################"
