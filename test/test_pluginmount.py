@@ -1,10 +1,8 @@
 from JsonStats.FetchStats.Plugins import *
-import platform
 
 from . import TestCase
 
 import JsonStats.FetchStats.Plugins
-from JsonStats.FetchStats import PluginMount
 from JsonStats.FetchStats import Fetcher
 
 
@@ -12,7 +10,6 @@ class TestPluginMount(TestCase):
 
     def setUp(self):
         # Do stuff that has to happen on every test in this instance
-        self.pluginmount = PluginMount
         self.fetcher = Fetcher
 
     def test_get_plugins(self):
