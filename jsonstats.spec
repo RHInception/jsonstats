@@ -1,7 +1,6 @@
 # Depends on redhat-rpm-config
 %define distribution %(/usr/lib/rpm/redhat/dist.sh --disttype)
 %define distribution_version %(/usr/lib/rpm/redhat/dist.sh --distnum)
-%define python_minor_version %(%{__python} -c "import platform; print(platform.python_version_tuple()[1])")
 
 %if "el" == "%{distribution}"
 %{!?rhel: %define rhel %{distribution_version}}
@@ -201,9 +200,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{_name}
 %{init_script}
 %config(noreplace)/etc/sysconfig/%{_name}
-%if 0%{?python_minor_version} > 4
 %attr(0755,jsonstatsd,jsonstatsd) %dir %{_localstatedir}/log/%{_name}
-%endif
 
 ######################################################################
 
