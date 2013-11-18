@@ -21,7 +21,7 @@ Version:         0.6.0
 Group:           Development/Libraries
 License:         MIT
 Source0:         %{name}-%{version}.tar.gz
-Url:             https://github.com/tbielawa/restfulstatsjson
+Url:             https://github.com/tbielawa/jsonstats
 
 BuildArch:        noarch
 # Common *Requires
@@ -81,12 +81,12 @@ BuildRequires:    systemd
 %endif
 
 ######################################################################
-# Define the name of the init script to include in the %files section
+# Define the name of the init script to include in the files section
 ######################################################################
 %if %{boot_system} == "sysv"
 %define init_script /etc/init.d/jsonstatsd
 %else
-%define init_script /usr/lib/systemd/system/%{_name}.service
+%define init_script %{_unitdir}/%{_name}.service
 %endif
 
 
