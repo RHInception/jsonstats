@@ -3,11 +3,11 @@
 In terminal 1:
 
     . ./hacking/setup-env
-    ./server.py
+    ./bin/jsonstatsd
 
 In terminal 2:
 
-    curl localhost:8888 | python -m json.tool
+    curl localhost:8008 | python -m json.tool
 
 
 # How to make a new fact plugin
@@ -16,26 +16,13 @@ In terminal 2:
 * New fact plugins MUST subclass the `Fetcher` parent class. Example:
 
         from FetchStats import Fetcher
-        class MegaFRObber(Fetcher):
+        class MegaFrobber(Fetcher):
 
 
-* New fact plugins MUST define the `dump` method. This MUST return a
-  raw python datastructure which is serializable by the JSON
-  module. Example
+* Read the source for the `Fetcher` base class in
+  `JsonStats/FetchStats/__init__.py` to see the remaining methods you
+  must implement in your plugin.
 
-        def dump(self):
-            return self.data
-
-
-* New fact plugins MUST define the `dump_json` method. This method may
-  return a serialized datastructure (most likely from `dump`) as a
-  JSON string. Example:
-
-        def dump_json(self):
-            return self.json.dumps(self.dump())
-
-* New fact plugins MUST define the `_load_data` method. This method
-  may be called internally to refresh a given fact plugins cache.
 
 * New fact plugins module names MUST be added to the `__all__` list in
   `FetchStats/Plugins/__init__.py`
