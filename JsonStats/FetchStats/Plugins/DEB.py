@@ -6,9 +6,7 @@ class DEB(Fetcher):
 
     def __init__(self):
         """
-        Returns a deb  manifest (all debs installed on the system)
-
-        **Note**: This takes more than a few seconds!!
+        Returns a deb manifest (all debs installed on the system)
         """
         self.context = 'deb'
         self._load_data()
@@ -27,12 +25,12 @@ class DEB(Fetcher):
         except Exception, e:
             self._loaded(False, str(e))
 
-    def dump(self, key=None):
+    def dump(self):
         # poor mans cache, refresh cache in an hour
         if (datetime.datetime.utcnow() -
                 datetime.timedelta(hours=1)) > self._refresh_time:
-            self._load_data(key)
+            self._load_data()
         return self._debs
 
-    def dump_json(self, key=None):
-        return self.json.dumps(self.dump(key))
+    def dump_json(self):
+        return self.json.dumps(self.dump())

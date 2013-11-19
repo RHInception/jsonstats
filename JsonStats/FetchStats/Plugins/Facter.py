@@ -1,3 +1,4 @@
+import datetime
 from JsonStats.FetchStats import Fetcher
 
 
@@ -9,6 +10,7 @@ class Facter(Fetcher):
         self._load_data()
 
     def _load_data(self):
+        self._refresh_time = datetime.datetime.utcnow()
         try:
             output = self._exec('facter -p --yaml')
             self.facts = self.yaml.load(output)
@@ -21,6 +23,10 @@ class Facter(Fetcher):
             self._loaded(False, msg=str(e))
 
     def dump(self):
+        # poor mans cache, refresh cache in an hour
+        if (datetime.datetime.utcnow() -
+                datetime.timedelta(minutes=5)) > self._refresh_time:
+            self._load_data()
         return self.facts
 
     def dump_json(self):

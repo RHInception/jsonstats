@@ -84,7 +84,11 @@ class Fetcher:
 
         returns a string of command_output
         """
-        return self.commands.getstatusoutput(cmd)[1]
+        (ret, out) = self.commands.getstatusoutput(cmd)
+        if not ret == 0:
+            raise OSError(out)
+        else:
+            return out
 
     def _loaded(self, state, msg=None):
         """

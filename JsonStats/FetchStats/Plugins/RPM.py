@@ -13,15 +13,11 @@ class RPM(Fetcher):
         self.context = 'rpm'
         self._load_data()
 
-    def _load_data(self, key=None):
+    def _load_data(self):
         self._refresh_time = datetime.datetime.utcnow()
         self._rpms = {}
 
-        # _exec will shlex.split will list-ify the cmd
-        if key:
-            cmd = 'rpm -q --queryformat "%%{NAME} %%{VERSION}\n" %s' % key
-        else:
-            cmd = 'rpm -qa --queryformat "%{NAME} %{VERSION}\n"'
+        cmd = 'rpm -qa --queryformat "%{NAME} %{VERSION}\n"'
 
         try:
             for line in self._exec(cmd).split('\n')[:-1]:
@@ -31,12 +27,12 @@ class RPM(Fetcher):
         except Exception, e:
             self._loaded(False, str(e))
 
-    def dump(self, key=None):
+    def dump(self):
         # poor mans cache, refresh cache in an hour
         if (datetime.datetime.utcnow() -
-                datetime.timedelta(hours=1)) > self._refresh_time:
-            self._load_data(key)
+                datetime.timedelta(minutes=1)) > self._refresh_time:
+            self._load_data()
         return self._rpms
 
-    def dump_json(self, key=None):
-        return self.json.dumps(self.dump(key))
+    def dump_json(self):
+        return self.json.dumps(self.dump())
