@@ -15,7 +15,7 @@ Name:            jsonstats
 %define _name    jsonstatsd
 Release:         1%{?dist}
 Summary:         Client for exposing system information over a REST interface
-Version:         0.6.0
+Version:         1.0.0
 
 Group:           Development/Libraries
 License:         MIT
@@ -205,6 +205,9 @@ rm -rf $RPM_BUILD_ROOT
 ######################################################################
 
 %changelog
+* Wed Nov 20 2013 Tim Bielawa <tbielawa@redhat.com> - 1.0.0-1
+- Ready for 1.0.0
+
 * Sun Nov 17 2013 Tim Bielawa <tbielawa@redhat.com> - 0.6.0-1
 - Now daemonizes and has proper init scripts
 
