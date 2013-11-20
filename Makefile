@@ -19,7 +19,7 @@ pep8:
 	@echo "#############################################"
 	@echo "# Running PEP8 Compliance Tests"
 	@echo "#############################################"
-	pep8 --ignore=E501 -r JsonStats/ bin/ setup.py
+	pep8 --ignore=E501,E121,E124 JsonStats/ bin/jsonstatsd setup.py
 
 pyflakes:
 	@echo "#############################################"

@@ -13,6 +13,7 @@ import urllib
 import syslog
 import errno
 
+
 ######################################################################
 # Utility functions for the pseudo-wsgi app
 def make_app():
@@ -89,7 +90,6 @@ def run_old_server(host, port):
 
         logger = create_logger(
             'jsonstatsd_access', 'jsonstatsd_access.log', '%(message)s')
-
 
         class WSGIWrapperHandler(BaseHTTPRequestHandler):
 
@@ -208,7 +208,7 @@ class StatsApp(object):
     """
 
     # load modules to run
-    _plugins = [ p for p in JsonStats.FetchStats.Fetcher.get_plugins() if p._state == True ]
+    _plugins = [p for p in JsonStats.FetchStats.Fetcher.get_plugins() if p._state]
 
     def __call__(self, environ, start_response):
         result = {}
