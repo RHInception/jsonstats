@@ -5,6 +5,6 @@ python:
 install:
     - "pip install pep8 nose simplejson"
 script:
-    - "pep8 JsonStats"
+    - "pep8 --ignore=E501 JsonStats bin/jsonstatsd"
     - "nosetests -v"
 email: false
