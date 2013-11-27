@@ -56,7 +56,7 @@ def run_server(host, port):
     from wsgiref.simple_server import make_server, WSGIRequestHandler
 
     logger = create_logger(
-        'jsonstats_access', 'jsonstats_access.log', '%(message)s')
+        'jsonstatsd_access', 'jsonstatsd_access.log', '%(message)s')
 
     class JsonstatsHandler(WSGIRequestHandler):
 
