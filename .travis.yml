@@ -1,7 +1,6 @@
 language: python
 python:
     - "2.5"
-    - "2.7"
 install:
     - "pip install pep8 nose simplejson"
 script:
