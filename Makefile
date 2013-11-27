@@ -29,6 +29,9 @@ pyflakes:
 	-pyflakes JsonStats/
 	pyflakes bin/
 
+install: clean
+	python ./setup.py install
+
 sdist: clean
 	python setup.py sdist -t MANIFEST.in
 
