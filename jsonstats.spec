@@ -13,7 +13,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 Name:            jsonstats
 %define _name    jsonstatsd
-Release:         1%{?dist}
+Release:         2%{?dist}
 Summary:         Client for exposing system information over a REST interface
 Version:         1.0.0
 
@@ -205,6 +205,9 @@ rm -rf $RPM_BUILD_ROOT
 ######################################################################
 
 %changelog
+* Wed Nov 27 2013 Tim Bielawa <tbielawa@redhat.com> - 1.0.0-2
+- Make log files named consistently
+
 * Wed Nov 20 2013 Tim Bielawa <tbielawa@redhat.com> - 1.0.0-1
 - Ready for 1.0.0
 
