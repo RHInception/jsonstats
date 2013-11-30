@@ -7,12 +7,23 @@ class Facter(Fetcher):
 
     def __init__(self):
         self.context = 'facter'
+        self._cmd = 'facter --yaml'
+
+        try:
+            import rpm
+            ts = rpm.TransactionSet()
+            mi = ts.dbMatch( 'name', 'puppet')
+            if mi.count() > 0:
+                self._cmd = 'facter -p --yaml'
+        except:
+            pass
         self._load_data()
 
     def _load_data(self):
         self._refresh_time = datetime.datetime.utcnow()
+
         try:
-            output = self._exec('facter -p --yaml')
+            output = self._exec(self._cmd)
             self.facts = self.yaml.load(output)
             self._loaded(True)
         except OSError, e:

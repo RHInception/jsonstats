@@ -38,7 +38,7 @@ def create_logger(name, filename,
     try:
         handler = logging.handlers.TimedRotatingFileHandler(
             logfile, 'd')
-    except IOError as e:
+    except IOError, e:
         if e.errno == errno.EACCES:
             syslog.syslog(syslog.LOG_ERR, "Error: Unable to write to %s. Exiting" % logfile)
             raise SystemExit(1)
@@ -220,7 +220,7 @@ class StatsApp(object):
 
         # Return the json all together
         start_response("200 OK", [("Content-Type", "application/json")])
-        return json.dumps(result)
+        return json.dumps(result, sort_keys=True, separators=(',', ': '))
 
 
 ######################################################################

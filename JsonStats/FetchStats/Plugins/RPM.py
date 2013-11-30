@@ -3,7 +3,6 @@ from JsonStats.FetchStats import Fetcher
 
 
 class RPM(Fetcher):
-
     def __init__(self):
         """
         Returns an rpm manifest (all rpms installed on the system.

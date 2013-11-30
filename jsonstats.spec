@@ -97,7 +97,7 @@ BuildRequires:    systemd
 ######################################################################
 
 %pre
-getent passwd %{name}d >/dev/null 2>&1 || %{_sbindir}/useradd --no-create-home --shell %{_sbindir}/nologin --system %{name}d
+getent passwd %{_name} >/dev/null 2>&1 || %{_sbindir}/useradd -M -r --shell %{_sbindir}/nologin  %{_name}
 
 
 ######################################################################
@@ -112,7 +112,7 @@ getent passwd %{name}d >/dev/null 2>&1 || %{_sbindir}/useradd --no-create-home -
 if [ $1 -eq 0 ] ; then
     /sbin/service %{_name} stop >/dev/null 2>&1
     /sbin/chkconfig --del %{_name}
-    %{_sbindir}/userdel -r %{_name} > /dev/null 2>&1
+    %{_sbindir}/userdel %{_name} > /dev/null 2>&1
 fi
 
 %postun
