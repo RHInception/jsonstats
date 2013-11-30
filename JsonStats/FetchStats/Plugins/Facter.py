@@ -12,7 +12,7 @@ class Facter(Fetcher):
         try:
             import rpm
             ts = rpm.TransactionSet()
-            mi = ts.dbMatch( 'name', 'puppet')
+            mi = ts.dbMatch('name', 'puppet')
             if mi.count() > 0:
                 self._cmd = 'facter -p --yaml'
         except:
