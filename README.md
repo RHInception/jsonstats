@@ -1,7 +1,7 @@
 # jsonstats
 [![Build Status](https://travis-ci.org/tbielawa/jsonstats.png?branch=master)](https://travis-ci.org/tbielawa/jsonstats)
 
-RESTful backend service for querying arbitraty system "facts".
+RESTful backend service for querying arbitrary system "facts".
 
 ## Features
 * Minimal set of requirements
