@@ -1,22 +1,35 @@
 import datetime
 from JsonStats.FetchStats import Fetcher
+import os.path
 
 
 class Facter(Fetcher):
+    """
+    Facter plugin for `jsonstats`. Returns key-value pairs of general
+    system information provided by the `facter` command.
+
+    Load conditions:
+    * Plugin will load if the `facter` command is found
+
+    Operating behavior:
+    * Plugin will call `facter` with the `-p` (return `puppet` facts)
+      option if the `puppet` command is on the system.
+
+    Dependencies:
+    * Facter - http://puppetlabs.com/blog/facter-part-1-facter-101
+
+    Optional dependencies:
+    * Puppet - http://puppetlabs.com/puppet/what-is-puppet
+    """
+
     import yaml
 
     def __init__(self):
         self.context = 'facter'
-        self._cmd = 'facter --yaml'
+        self._cmd = 'facter --yaml 2>/dev/null'
 
-        try:
-            import rpm
-            ts = rpm.TransactionSet()
-            mi = ts.dbMatch('name', 'puppet')
-            if mi.count() > 0:
-                self._cmd = 'facter -p --yaml'
-        except:
-            pass
+        if os.path.exists('/usr/bin/puppet'):
+            self._cmd = 'facter -p --yaml 2>/dev/null'
         self._load_data()
 
     def _load_data(self):
