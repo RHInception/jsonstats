@@ -26,10 +26,10 @@ class Facter(Fetcher):
 
     def __init__(self):
         self.context = 'facter'
-        self._cmd = 'facter --yaml'
+        self._cmd = 'facter --yaml 2>/dev/null'
 
         if os.path.exists('/usr/bin/puppet'):
-            self._cmd = 'facter -p --yaml'
+            self._cmd = 'facter -p --yaml 2>/dev/null'
         self._load_data()
 
     def _load_data(self):
