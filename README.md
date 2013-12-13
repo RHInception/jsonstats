@@ -187,3 +187,5 @@ Run `make tests` to execute the test suite.
 * Until we come up with a better way of dynamically loading all
   plugins, new fact plugin module names MUST be added to the `__all__`
   list in `JsonStats/FetchStats/Plugins/__init__.py`
+
+*This issue is being tracked in [rfe: configurable 'extra plugins' parameter](https://github.com/RHInception/jsonstats/issues/2)*
