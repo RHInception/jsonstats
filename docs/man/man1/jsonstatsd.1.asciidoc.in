@@ -116,6 +116,9 @@ SEE ALSO
 --------
 *json_reformat*(1), from the *yajl* package
 
-Introducing JSON: <http://www.json.org/>
+**/usr/share/doc/jsonstats-*/README.md** - For a complete list of
+ requirements and plugin writing docs
 
-The jsonstats Homepage: <https://github.com/RHInception/jsonstats/>
+*Introducing JSON*: <http://www.json.org/>
+
+*The jsonstats Homepage*: <https://github.com/RHInception/jsonstats/>
