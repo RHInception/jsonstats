@@ -1,0 +1,143 @@
+'\" t
+.\"     Title: jsonstatsd
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 12/13/2013
+.\"    Manual: RESTful interface to query system facts
+.\"    Source: jsonstats 1.0.1
+.\"  Language: English
+.\"
+.TH "JSONSTATSD" "1" "12/13/2013" "jsonstats 1\&.0\&.1" "RESTful interface to query sys"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+jsonstatsd \- RESTful interface for querying arbitrary system facts
+.SH "SYNOPSIS"
+.sp
+jsonstatsd [\-h] [\-p PORT] [\-l INTERFACE] [\-\-logdir DIR]
+.SH "DESCRIPTION"
+.sp
+\fBjsonstats\fR is a pluggable system which provides a RESTful interface to query a machine for any arbitrary information about it\&. \fBjsonstatsd\fR is the name of the command to run this service\&. The results returned are provided by \fIFact Plugins\fR in JSON format\&.
+.SH "OPTIONS"
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Show a help message and exit\&.
+.RE
+.PP
+\fB\-p PORT\fR, \fB\-\-port PORT\fR
+.RS 4
+Specify the
+\fBPORT\fR
+to listen on\&. Default:
+\fI8008\fR
+.RE
+.PP
+\fB\-l INTERFACE\fR, \fB\-\-listen INTERFACE\fR
+.RS 4
+Specify the
+\fBINTERFACE\fR
+to listen on\&. Default:
+\fI0\&.0\&.0\&.0\fR
+.sp
+Give
+\fB127\&.0\&.0\&.1\fR
+to only listen for local requests\&.
+.RE
+.PP
+\fB\-\-logdir DIRECTORY\fR
+.RS 4
+The
+\fBDIRECTORY\fR
+to store application logs in\&. Default:
+\fI\&./logs/\fR
+.RE
+.SH "EXAMPLE"
+.sp
+Fetch the data
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ curl localhost:8008
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+If you run this command, you\(cqll see that the output from \fBjsonstats\fR can be rather difficult to read in raw form\&. On systems with Python 2\&.5+ you can pipe the output into the json reformatter instead:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ curl localhost:8008 | python \-m json\&.tool
+{
+    "facter": {
+        "architecture": "x86_64",
+        "augeasversion": "1\&.0\&.0",
+        "facterversion": "1\&.6\&.18",
+        "lsbdistid": "Fedora"
+        \&.\&.\&.
+    },
+    "rpm": {
+        "ehcache\-core": "2\&.6\&.0",
+        "eject": "2\&.1\&.5",
+        "elfutils\-libs": "0\&.154",
+        "elinks": "0\&.12",
+        "emacs": "24\&.1",
+        "emacs\-apel": "10\&.8",
+        "emacs\-auto\-complete": "1\&.3\&.1",
+        "emacs\-bbdb": "2\&.35",
+        "emacs\-color\-theme": "6\&.6\&.0",
+        "emacs\-common": "24\&.1",
+        "emacs\-common\-w3m": "1\&.4\&.435",
+        "jsonstats": "1\&.0\&.1",
+        "talook": "1\&.2\&.09
+        \&.\&.\&.
+    }
+}
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+There are several other tools which can do this for you as well\&. Search for \fB"bash json format"\fR online and you should be able to find what you need\&.
+.SH "FILES"
+.sp
+\fB/etc/sysconfig/jsonstatsd\fR \(em jsonstatsd configuration file
+.SH "AUTHOR"
+.sp
+jsonstatsd was written by Red Hat, Inc\&.\&.
+.sp
+This man page was written by Tim Bielawa <tbielawa@redhat\&.com>\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2013, Red Hat, Inc\&.\&.
+.sp
+jsonstats is released under the terms of the MIT License\&.
+.SH "SEE ALSO"
+.sp
+\fBjson_reformat\fR(1), from the \fByajl\fR package
+.sp
+Introducing JSON: http://www\&.json\&.org/
+.sp
+The jsonstats Homepage: https://github\&.com/RHInception/jsonstats/

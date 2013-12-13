@@ -13,14 +13,14 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 Name:            jsonstats
 %define _name    jsonstatsd
-Release:         2%{?dist}
+Release:         1%{?dist}
 Summary:         Client for exposing system information over a REST interface
-Version:         1.0.0
+Version:         1.0.1
 
 Group:           Development/Libraries
 License:         MIT
 Source0:         %{name}-%{version}.tar.gz
-Url:             https://github.com/tbielawa/jsonstats
+Url:             https://github.com/RHInception/jsonstats
 
 BuildArch:        noarch
 # Common *Requires
@@ -205,6 +205,14 @@ rm -rf $RPM_BUILD_ROOT
 ######################################################################
 
 %changelog
+* Fri Dec 13 2013 Tim Bielawa <tbielawa@redhat.com> - 1.0.1-1
+- Bug fixes and useability improvements
+* CLI options parsed before plugin loading
+* JSON output is sorted
+* Facter plugin uses puppet only if available
+* Packaging correctly adds/removes jsonstatsd user
+* More unit tests
+
 * Wed Nov 27 2013 Tim Bielawa <tbielawa@redhat.com> - 1.0.0-2
 - Make log files named consistently
 

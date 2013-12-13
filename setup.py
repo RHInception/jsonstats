@@ -53,7 +53,7 @@ final_data_files = [
 
 
 setup(name='jsonstats',
-      version='1.0.0',
+      version='1.0.1',
       description='Client for exposing system information over a REST interface',
       maintainer='Tim Bielawa',
       maintainer_email='tbielawa@redhat.com',
