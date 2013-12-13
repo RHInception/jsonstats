@@ -2,7 +2,7 @@ language: python
 python:
     - "2.7"
 install:
-    - "pip install pep8 nose simplejson"
+    - "pip install pep8 nose simplejson PyYAML"
 script:
     - "pep8 --ignore=E501,E121,E124 JsonStats bin/jsonstatsd"
     - "nosetests -v"
