@@ -28,6 +28,19 @@ Via *rpm* (requires development packages):
     make rpm
     sudo yum localinstall ./rpm-build/noarch/*.rpm
 
+### RHEL Machines
+On RHEL machines you will need the **EPEL** repositories installed for
+the PyYAML package.
+
+**RHEL6**:
+
+    sudo rpm -Uvh http://mirror.pnl.gov/epel/6/i386/epel-release-6-8.noarch.rpm
+
+**RHEL5**:
+
+    sudo rpm -Uvh http://mirror.chpc.utah.edu/pub/epel/5/i386/epel-release-5-4.noarch.rpm
+
+
 ## Run It
 Now we'll start `jsonstatsd` in a terminal. It won't detach from our
 controlling shell. This means we'll have to `ctrl+c` the process when
