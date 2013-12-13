@@ -1,11 +1,5 @@
 #!/usr/bin/env python
-try:
-    import json
-except:
-    import simplejson as json
 import os
-from JsonStats.FetchStats.Plugins import *
-import JsonStats.FetchStats
 import logging
 import logging.handlers
 import re
@@ -202,28 +196,6 @@ class Router(object):
 
 
 ######################################################################
-class StatsApp(object):
-    """
-    Gets and returns the stats.
-    """
-
-    # load modules to run
-    _plugins = [p for p in JsonStats.FetchStats.Fetcher.get_plugins() if p._state]
-
-    def __call__(self, environ, start_response):
-        result = {}
-
-        # Execute each plugin
-        for plugin in self._plugins:
-            context = plugin.context
-            result[context] = plugin.dump()
-
-        # Return the json all together
-        start_response("200 OK", [("Content-Type", "application/json")])
-        return json.dumps(result, sort_keys=True, separators=(',', ': '))
-
-
-######################################################################
 if __name__ == "__main__":
     import platform
     py_version = platform.python_version()
@@ -232,7 +204,7 @@ if __name__ == "__main__":
     # Using optparse since argparse is not available in 2.5
     from optparse import OptionParser
     parser = OptionParser()
-    parser.add_option('-p', '--port', dest='port', default=8008,
+    parser.add_option('-p', '--port', dest='port', default=8008, type='int',
                       help='Port to listen on. (Default: 8008)')
     parser.add_option(
         '-l', '--listen', dest='listen', default='0.0.0.0',
@@ -246,6 +218,10 @@ if __name__ == "__main__":
     os.environ['JSONSTATS_LOG_DIR'] = options.logdir
 
     try:
+        # import StatsApp class after the CLI options are parsed. This
+        # lets you call '--help' without waiting for plugins first.
+        from JsonStats import StatsApp
+
         # Fall back to old school container if on 2.4.x
         if py_version >= '2.4.0' and py_version < '2.5.0':
             run_old_server(options.listen, int(options.port))
