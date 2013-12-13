@@ -1,5 +1,5 @@
 # jsonstats
-[![Build Status](https://travis-ci.org/tbielawa/jsonstats.png?branch=master)](https://travis-ci.org/tbielawa/jsonstats)
+[![Build Status](https://travis-ci.org/RHInception/jsonstats.png?branch=devel)](https://travis-ci.org/RHInception/jsonstats)
 
 RESTful backend service for querying arbitraty system "facts".
 
