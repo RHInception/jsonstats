@@ -220,7 +220,7 @@ if __name__ == "__main__":
     try:
         # import StatsApp class after the CLI options are parsed. This
         # lets you call '--help' without waiting for plugins first.
-        from JsonStats import StatsApp
+        from JsonStats.StatsApp import StatsApp
 
         # Fall back to old school container if on 2.4.x
         if py_version >= '2.4.0' and py_version < '2.5.0':

@@ -66,6 +66,9 @@ class Fetcher:
         """
         raise NotImplementedError('dump_json must be defined')
 
+    def __str__(self):
+        return self.context
+
     def _load_data(self):
         """
         In this method you should load and then save all of your

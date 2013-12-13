@@ -29,6 +29,8 @@ class TestPluginMount(TestCase):
         Verify that after loading plugins we can see them attached to
         the Mount.
         """
-        example_plugin = self.example_plugin()
-        discovered = len(self.fetcher.get_plugins())
-        assert discovered == 1
+        #example_plugin = self.example_plugin()
+        plugins = self.fetcher.get_plugins()
+        plugin_names = map(lambda x: str(x), plugins)
+        discovered = len(plugins)
+        self.assertEqual(discovered, 1, msg="Discovered %d plugins (%s), expected 1" % (discovered, ', '.join(plugin_names)))
