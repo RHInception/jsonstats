@@ -1,17 +1,11 @@
-try:
-    import json
-except:
-    import simplejson as json
-from JsonStats.FetchStats.Plugins import *
 import JsonStats.FetchStats
+import JsonStats.Utils
 
 
-######################################################################
 class StatsApp(object):
     """
     Gets and returns the stats.
     """
-
     # load modules to run
     _plugins = [p for p in JsonStats.FetchStats.Fetcher.get_plugins() if p._state]
 
@@ -25,4 +19,4 @@ class StatsApp(object):
 
         # Return the json all together
         start_response("200 OK", [("Content-Type", "application/json")])
-        return json.dumps(result, sort_keys=True, separators=(',', ': '))
+        return JsonStats.Utils.dump_sorted_json_string(result)
