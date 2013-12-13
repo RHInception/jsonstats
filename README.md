@@ -189,3 +189,15 @@ Run `make tests` to execute the test suite.
   list in `JsonStats/FetchStats/Plugins/__init__.py`
 
 *This issue is being tracked in [rfe: configurable 'extra plugins' parameter](https://github.com/RHInception/jsonstats/issues/2)*
+
+## Building the Man Pages
+Building the man pages requires the `a2x` command. This is usually
+provided by the `asciidoc` package.
+
+If `make docs` says:
+
+    make: Nothing to be done for `docs'.
+
+Then you should just need to do this:
+
+    $ touch VERSION; make docs

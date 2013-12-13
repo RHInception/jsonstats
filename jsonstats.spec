@@ -188,6 +188,8 @@ serializable python datastructure.
 %install
 %{__python} setup.py install -O1 --root=$RPM_BUILD_ROOT
 %{__mkdir_p} $RPM_BUILD_ROOT%{_localstatedir}/log/%{_name}
+mkdir -p $RPM_BUILD_ROOT/%{_mandir}/man1/
+cp -v docs/man/man1/*.1 $RPM_BUILD_ROOT/%{_mandir}/man1/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -201,17 +203,19 @@ rm -rf $RPM_BUILD_ROOT
 %{init_script}
 %config(noreplace)/etc/sysconfig/%{_name}
 %attr(0755,jsonstatsd,jsonstatsd) %dir %{_localstatedir}/log/%{_name}
+%doc %{_mandir}/man1/jsonstatsd*
+%doc README.md LICENSE
 
 ######################################################################
 
 %changelog
 * Fri Dec 13 2013 Tim Bielawa <tbielawa@redhat.com> - 1.0.1-1
 - Bug fixes and useability improvements
-* CLI options parsed before plugin loading
-* JSON output is sorted
-* Facter plugin uses puppet only if available
-* Packaging correctly adds/removes jsonstatsd user
-* More unit tests
+- CLI options parsed before plugin loading
+- JSON output is sorted
+- Facter plugin uses puppet only if available
+- Packaging correctly adds/removes jsonstatsd user
+- More unit tests
 
 * Wed Nov 27 2013 Tim Bielawa <tbielawa@redhat.com> - 1.0.0-2
 - Make log files named consistently

@@ -1,8 +1,38 @@
+########################################################
+
+# Makefile for jsonstats
+#
+# useful targets:
+#   make sdist ---------------- produce a tarball
+#   make rpm  ----------------- produce RPMs
+#   make docs ----------------- rebuild the manpages (results are checked in)
+#   make pyflakes, make pep8 -- source code checks
+#   make test ----------------- run all unit tests (export LOG=true for /tmp/ logging)
+
+########################################################
+
+# > VARIABLE = value
+#
+# Normal setting of a variable - values within it are recursively
+# expanded when the variable is USED, not when it's declared.
+#
+# > VARIABLE := value
+#
+# Setting of a variable with simple expansion of the values inside -
+# values within it are expanded at DECLARATION time.
+
+########################################################
+
+
+MANPAGES := docs/man/man1/jsonstatsd.1
+ifneq ($(shell which a2x 2>/dev/null),)
 # This doesn't evaluate until it's called. The -D argument is the
 # directory of the target file ($@), kinda like `dirname`.
 ASCII2MAN = a2x -D $(dir $@) -d manpage -f manpage $<
 ASCII2HTMLMAN = a2x -D docs/html/man/ -d manpage -f xhtml
-MANPAGES := docs/man/man1/jsonstatsd.1
+else
+ASCII2MAN = @echo "ERROR: AsciiDoc 'a2x' command is not installed but is required to build $(MANPAGES)" && exit 1
+endif
 
 # VERSION file provides one place to update the software version.
 VERSION := $(shell cat VERSION)
