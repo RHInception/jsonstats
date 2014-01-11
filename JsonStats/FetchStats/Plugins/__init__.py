@@ -3,4 +3,5 @@ __all__ = [
     'Facter',
     'DEB',
     'Pip',
+    'Timestamp',
 ]
