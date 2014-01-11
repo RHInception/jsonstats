@@ -15,7 +15,7 @@ Name:            jsonstats
 %define _name    jsonstatsd
 Release:         1%{?dist}
 Summary:         Client for exposing system information over a REST interface
-Version:         1.0.1
+Version:         1.0.2
 
 Group:           Development/Libraries
 License:         MIT

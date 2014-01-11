@@ -10,6 +10,15 @@ RESTful backend service for querying arbitraty system "facts".
 * host and environment REST endpoints
 * Unit tested
 
+### Plugins
+The following plugins come stock with jsonstats:
+
+* Deb - Lists installed debian/ubuntu packages
+* Facter - Lists system information from the facter command
+* Pip - Lists installed pip packages
+* RPM - Lists installed rpm packages
+* Timestamp - Timestamp of when the data was requested
+
 ### Requirements
 * Python 2.4+
 * [python-simplejson](https://pypi.python.org/pypi/simplejson/) if Python 2.4 or 2.5

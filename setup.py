@@ -53,11 +53,11 @@ final_data_files = [
 
 
 setup(name='jsonstats',
-      version='1.0.1',
+      version='1.0.2',
       description='Client for exposing system information over a REST interface',
       maintainer='Tim Bielawa',
       maintainer_email='tbielawa@redhat.com',
-      url='https://github.com/tbielawa/jsonstats',
+      url='https://github.com/RHInception/jsonstats',
       license='MIT',
       package_dir={'jsonstats': 'JsonStats'},
       packages=[
