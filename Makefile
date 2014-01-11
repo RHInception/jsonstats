@@ -64,6 +64,9 @@ docs: $(MANPAGES)
 RPMSPECDIR := .
 RPMSPEC := $(RPMSPECDIR)/jsonstats.spec
 
+tag:
+	git tag -s -m $(TAG) jsonstats-$(TAG)
+
 tests: unittests pep8 pyflakes
 	:
 
