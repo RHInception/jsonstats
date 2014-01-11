@@ -1,6 +1,7 @@
 import datetime
 from JsonStats.FetchStats import Fetcher
 
+
 class Timestamp(Fetcher):
     def __init__(self):
         """
