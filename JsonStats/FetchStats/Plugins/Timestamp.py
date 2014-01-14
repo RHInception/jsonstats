@@ -11,7 +11,7 @@ class Timestamp(Fetcher):
         self._load_data()
 
     def _load_data(self):
-        self._timestamp = str(datetime.datetime.now())
+        self._timestamp = {"date": str(datetime.datetime.now())}
         self._loaded(True)
 
     def dump(self):

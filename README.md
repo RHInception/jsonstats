@@ -205,6 +205,7 @@ Run `make tests` to execute the test suite.
   `JsonStats/FetchStats/__init__.py` to see the remaining methods you
   must implement in your plugin.
 
+* Plugins MUST return a Dictionary (hash) type data structure.
 
 * Until we come up with a better way of dynamically loading all
   plugins, new fact plugin module names MUST be added to the `__all__`
