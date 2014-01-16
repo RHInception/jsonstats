@@ -62,7 +62,7 @@ case "$1" in
         ;;
     status)
         status -p ${pidfile} $app
-        RETVAL=$?
+	exit $?
         ;;
     restart)
         restart
