@@ -106,13 +106,18 @@ rpmcommon: sdist
 	@cp dist/*.gz rpm-build/
 
 srpm5: rpmcommon
-	rpmbuild-md5 --define "_topdir %(pwd)/rpm-build" \
+	rpmbuild --define "_topdir %(pwd)/rpm-build" \
 	--define 'dist .el5' \
 	--define "_builddir %{_topdir}" \
 	--define "_rpmdir %{_topdir}" \
 	--define "_srcrpmdir %{_topdir}" \
 	--define "_specdir $(RPMSPECDIR)" \
 	--define "_sourcedir %{_topdir}" \
+	--define "_source_filedigest_algorithm 1" \
+	--define "_binary_filedigest_algorithm 1" \
+	--define "_binary_payload w9.gzdio" \
+	--define "_source_payload w9.gzdio" \
+	--define "_default_patch_fuzz 2" \
 	-bs $(RPMSPEC)
 	@echo "#############################################"
 	@echo "JsonStats SRPM is built:"
