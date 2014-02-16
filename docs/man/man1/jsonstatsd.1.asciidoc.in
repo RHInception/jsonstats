@@ -33,19 +33,25 @@ OPTIONS
 
 Show a help message and exit.
 
-*-p PORT*, *--port PORT*::
+*-p PORT*, *--port=PORT*::
 
 Specify the *PORT* to listen on. Default: '8008'
 
-*-l INTERFACE*, *--listen INTERFACE*::
+*-l INTERFACE*, *--listen=INTERFACE*::
 
 Specify the *INTERFACE* to listen on. Default: '0.0.0.0'
 +
 Give *127.0.0.1* to only listen for local requests.
 
-*--logdir DIRECTORY*::
+*--logdir=DIRECTORY*::
 
 The *DIRECTORY* to store application logs in. Default: './logs/'
+
+*-e PLUGIN_PATHSPEC*, *--extra-plugins=PLUGIN_PATHSPEC*::
+
+Path to one or more directories holding custom fact plugins. Separate
+multiple paths with colon characters. For example:
+*--extra-plugins=/path1:/another/path*
 
 
 EXAMPLE

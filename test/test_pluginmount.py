@@ -33,4 +33,4 @@ class TestPluginMount(TestCase):
         plugins = self.fetcher.get_plugins()
         plugin_names = map(lambda x: str(x), plugins)
         discovered = len(plugins)
-        self.assertEqual(discovered, 1, msg="Discovered %d plugins (%s), expected 1" % (discovered, ', '.join(plugin_names)))
+        self.assertGreaterEqual(discovered, 1, msg="Discovered %d plugins (%s), expected >=1" % (discovered, ', '.join(plugin_names)))

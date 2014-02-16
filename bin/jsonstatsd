@@ -6,6 +6,7 @@ import re
 import urllib
 import syslog
 import errno
+import JsonStats.Utils
 
 
 ######################################################################
@@ -203,7 +204,8 @@ if __name__ == "__main__":
 
     # Using optparse since argparse is not available in 2.5
     from optparse import OptionParser
-    parser = OptionParser()
+    epilog = "Note: use colons to to specify multiple extra-plugin paths"
+    parser = OptionParser(epilog=epilog)
     parser.add_option('-p', '--port', dest='port', default=8008, type='int',
                       help='Port to listen on. (Default: 8008)')
     parser.add_option(
@@ -212,10 +214,15 @@ if __name__ == "__main__":
     parser.add_option(
         '--logdir', dest='logdir', default='./logs/',
         help='Directory to log access requests to. (Default: ./logs/)')
+    parser.add_option(
+        '--extra-plugins', '-e', dest='extra_plugins', metavar='PLUGIN_PATHSPEC',
+        help='Path to directory with additional plugins')
 
     (options, args) = parser.parse_args()
 
     os.environ['JSONSTATS_LOG_DIR'] = options.logdir
+    if options.extra_plugins:
+        JsonStats.Utils.load_extra_plugins(options.extra_plugins)
 
     try:
         # import StatsApp class after the CLI options are parsed. This

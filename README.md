@@ -138,11 +138,13 @@ of all RPM packages installed on the system.
 
     Options:
       -h, --help            show this help message and exit
-      -p PORT, --port=PORT  Port to listen on. (Default: 8008)
+      -p PORT, --port=PORT  Port to listen on (Default: 8008)
       -l LISTEN, --listen=LISTEN
-                            Address to listen on. (Default: 0.0.0.0)
-      --logdir=LOGDIR       Directory to log access requests to. (Default:
+                            Address to listen on (Default: 0.0.0.0)
+      --logdir=LOGDIR       Directory to log access requests to (Default:
                             ./logs/)
+      -e PLUGIN_PATHSPEC --extra-plugins=PLUGIN_PATHSPEC
+                            Path to directory with additional plugins
 
 
 # More Information
@@ -167,21 +169,11 @@ service configuration file in `/etc/sysconfig/jsonstatsd`
 
 
     ######################################################################
-    # Listen on all interfaces by default. You might also enjoy: 127.0.0.1
-    # to just listen locally
-    INTERFACE=0.0.0.0
-
+    # See 'man 1 jsonstatsd' or 'jsonstatsd --help' for descriptions of
+    # all the available options
     ######################################################################
-    # Port to listen on
-    PORT=8008
 
-    ######################################################################
-    # Customize the logging directory
-    LOGDIR=/var/log/jsonstatsd
-
-    ######################################################################
-    # Single line with all options for the SysV init script
-    OPTIONS="--listen $INTERFACE --port $PORT --logdir $LOGDIR"
+    OPTIONS="--listen 0.0.0.0 --port 8008 --logdir /var/log/jsonstatsd"
 
 
 ## Logging

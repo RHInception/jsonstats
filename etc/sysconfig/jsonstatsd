@@ -1,16 +1,6 @@
 ######################################################################
-# Listen on all interfaces by default. You might also enjoy: 127.0.0.1
-# to just listen locally
-INTERFACE=0.0.0.0
-
+# See 'man 1 jsonstatsd' or 'jsonstatsd --help' for descriptions of
+# all the available options
 ######################################################################
-# Port to listen on
-PORT=8008
 
-######################################################################
-# Customize the logging directory
-LOGDIR=/var/log/jsonstatsd
-
-######################################################################
-# Single line with all options for the SysV init script
-OPTIONS="--listen $INTERFACE --port $PORT --logdir $LOGDIR"
+OPTIONS="--listen 0.0.0.0 --port 8008 --logdir /var/log/jsonstatsd"

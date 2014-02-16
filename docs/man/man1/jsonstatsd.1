@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: jsonstatsd
-.\"    Author: [see the "AUTHOR" section]
+.\"    Author: :doctype:manpage
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 12/13/2013
+.\"      Date: 02/16/2014
 .\"    Manual: RESTful interface to query system facts
-.\"    Source: jsonstats 1.0.1
+.\"    Source: jsonstats 1.0.2
 .\"  Language: English
 .\"
-.TH "JSONSTATSD" "1" "12/13/2013" "jsonstats 1\&.0\&.1" "RESTful interface to query sys"
+.TH "JSONSTATSD" "1" "02/16/2014" "jsonstats 1\&.0\&.2" "RESTful interface to query sys"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -42,7 +42,7 @@ jsonstatsd [\-h] [\-p PORT] [\-l INTERFACE] [\-\-logdir DIR]
 Show a help message and exit\&.
 .RE
 .PP
-\fB\-p PORT\fR, \fB\-\-port PORT\fR
+\fB\-p PORT\fR, \fB\-\-port=PORT\fR
 .RS 4
 Specify the
 \fBPORT\fR
@@ -50,7 +50,7 @@ to listen on\&. Default:
 \fI8008\fR
 .RE
 .PP
-\fB\-l INTERFACE\fR, \fB\-\-listen INTERFACE\fR
+\fB\-l INTERFACE\fR, \fB\-\-listen=INTERFACE\fR
 .RS 4
 Specify the
 \fBINTERFACE\fR
@@ -62,12 +62,18 @@ Give
 to only listen for local requests\&.
 .RE
 .PP
-\fB\-\-logdir DIRECTORY\fR
+\fB\-\-logdir=DIRECTORY\fR
 .RS 4
 The
 \fBDIRECTORY\fR
 to store application logs in\&. Default:
 \fI\&./logs/\fR
+.RE
+.PP
+\fB\-e PLUGIN_PATHSPEC\fR, \fB\-\-extra\-plugins=PLUGIN_PATHSPEC\fR
+.RS 4
+Path to one or more directories holding custom fact plugins\&. Separate multiple paths with colon characters\&. For example:
+\fB\-\-extra\-plugins=/path1:/another/path\fR
 .RE
 .SH "EXAMPLE"
 .sp
@@ -110,7 +116,7 @@ $ curl localhost:8008 | python \-m json\&.tool
         "emacs\-color\-theme": "6\&.6\&.0",
         "emacs\-common": "24\&.1",
         "emacs\-common\-w3m": "1\&.4\&.435",
-        "jsonstats": "1\&.0\&.1",
+        "jsonstats": "1\&.0\&.2",
         "talook": "1\&.2\&.09
         \&.\&.\&.
     }
@@ -143,3 +149,9 @@ jsonstats is released under the terms of the MIT License\&.
 \fBIntroducing JSON\fR: http://www\&.json\&.org/
 .sp
 \fBThe jsonstats Homepage\fR: https://github\&.com/RHInception/jsonstats/
+.SH "AUTHOR"
+.PP
+\fB:doctype:manpage\fR
+.RS 4
+Author.
+.RE
