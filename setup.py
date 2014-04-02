@@ -64,9 +64,9 @@ setup(name='jsonstats',
         'JsonStats',
         'JsonStats.FetchStats',
         'JsonStats.FetchStats.Plugins'
-        ],
+      ],
       scripts=[
         'bin/jsonstatsd',
-        ],
+      ],
       data_files=final_data_files,
 )
