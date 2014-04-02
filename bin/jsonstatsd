@@ -277,7 +277,7 @@ if __name__ == "__main__":
 
             load_request = (
                 'Requesting the following plugins to be loaded: %s' % (
-                ",".join(plugins)))
+                    ",".join(plugins)))
             start_logger.info(load_request)
             print load_request
 
