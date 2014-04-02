@@ -18,12 +18,34 @@ class PluginMount(type):
             # track of it later.
             cls.plugins.append(cls)
 
+    def get_specific_plugins(cls, names, *args, **kwargs):
+        """
+        Returns a list of initialized plugin objects
+        """
+        specific = []
+        for name in names:
+            for plugin in cls.plugins:
+                if plugin.__name__ == name:
+                    specific.append(plugin)
+
+        instantiate_plugins = [p(*args, **kwargs) for p in specific]
+        plugins = [p for p in instantiate_plugins if p._state]
+        print "The following plugins are now ready for use: %s" % (
+            ",".join([p.__class__.__name__ for p in plugins]))
+        return plugins
+
     def get_plugins(cls, *args, **kwargs):
         """
         Returns a list of initialized plugin objects
         """
-        instantiate_plugins = [p(*args, **kwargs) for p in cls.plugins]
-        return [p for p in instantiate_plugins if p._state]
+        return cls.get_specific_plugins([
+            n.__name__ for n in cls.plugins], *args, **kwargs)
+
+    def list_known_plugins(cls):
+        """
+        Returns a list of known plugins.
+        """
+        return [n.__name__ for n in cls.plugins]
 
 
 class Fetcher:

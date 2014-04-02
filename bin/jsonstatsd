@@ -11,12 +11,12 @@ import JsonStats.Utils
 
 ######################################################################
 # Utility functions for the pseudo-wsgi app
-def make_app():
+def make_app(plugins=[]):
     """
     Creates a WSGI application for use.
     """
     return Router({
-        '.*': StatsApp(),
+        '.*': StatsApp(plugins),
     })
 
 
@@ -44,7 +44,7 @@ def create_logger(name, filename,
         return logger
 
 
-def run_server(host, port):
+def run_server(host, port, plugins=[]):
     """
     If the server is called directly then serve via wsgiref.
     """
@@ -61,7 +61,7 @@ def run_server(host, port):
                 self.log_date_time_string(),
                 format % args))
 
-    application = make_app()
+    application = make_app(plugins)
 
     httpd = make_server(
         host, int(port), application,
@@ -70,7 +70,7 @@ def run_server(host, port):
     httpd.serve_forever()
 
 
-def run_old_server(host, port):
+def run_old_server(host, port, plugins=[]):
     """
     Code for running the old server.
     """
@@ -152,7 +152,8 @@ def run_old_server(host, port):
                 'REMOTE_HOST': '',
             }
 
-    server = WSGILiteServer((host, port), create_wsgi_wrapper(make_app()))
+    server = WSGILiteServer((host, port), create_wsgi_wrapper(
+        make_app(plugins)))
     print "server listening on http://%s:%s" % (host, port)
     server.serve_forever()
 
@@ -218,7 +219,26 @@ if __name__ == "__main__":
         '--extra-plugins', '-e', dest='extra_plugins', metavar='PLUGIN_PATHSPEC',
         help='Path to directory with additional plugins')
 
+    # Blacklisting
+    parser.add_option(
+        '--blacklist-plugin', '-b', dest='plugins_blacklist',
+        metavar='PLUGIN', action='append',
+        help=('A plugin to add to the blacklist. This will keep the plugin '
+              'from loading. Can not be used with a whitelist. May be used '
+              'multiple times.'))
+
+    # Whitelisting
+    parser.add_option(
+        '--white-plugin', '-w', dest='plugins_whitelist',
+        metavar='PLUGIN', action='append',
+        help=('A plugin to add to the whitelist. If used only plugins in the '
+              'whitelist will be loaded. Can not be used with a blacklist. '
+              'May be used multiple times.'))
+
     (options, args) = parser.parse_args()
+
+    if options.plugins_blacklist and options.plugins_whitelist:
+        parser.error('whitelist and blacklist are mutually exclusive')
 
     os.environ['JSONSTATS_LOG_DIR'] = options.logdir
     if options.extra_plugins:
@@ -230,12 +250,35 @@ if __name__ == "__main__":
         from JsonStats.FetchStats.Plugins import *
         from JsonStats.StatsApp import StatsApp
 
+        plugins = []
+        if options.plugins_whitelist or options.plugins_blacklist:
+            start_logger = create_logger(
+                'start_logger', 'startup.log')
+
+            if options.plugins_whitelist:
+                plugins = options.plugins_whitelist
+                notification = 'Whitelist enabled: %s' % ",".join(plugins)
+                start_logger.info(notification)
+                print notification
+
+            if options.plugins_blacklist:
+                # We need the fetcher to get all the known plugins
+                import JsonStats.FetchStats
+                plugins = JsonStats.FetchStats.Fetcher.list_known_plugins()
+                for bl_plugin in options.plugins_blacklist:
+                    if bl_plugin in plugins:
+                        plugins.remove(bl_plugin)
+
+                notification = 'Blacklist enabled: %s' % ",".join(plugins)
+                start_logger.info(notification)
+                print notification
+
         # Fall back to old school container if on 2.4.x
         if py_version >= '2.4.0' and py_version < '2.5.0':
             run_old_server(options.listen, int(options.port))
         # Else use the builtin wsgi container
         elif py_version >= '2.5.0':
-            run_server(options.listen, int(options.port))
+            run_server(options.listen, int(options.port), plugins)
         else:
             syslog.syslog(syslog.LOG_ERR, 'Error: Untested Python version in use: %s. Exiting' % py_version)
             raise SystemExit(1)

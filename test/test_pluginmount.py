@@ -23,7 +23,6 @@ class TestPluginMount(TestCase):
 
         self.example_plugin = _example_plugin
 
-
     def test_get_plugins(self):
         """
         Verify that after loading plugins we can see them attached to
@@ -34,3 +33,11 @@ class TestPluginMount(TestCase):
         plugin_names = map(lambda x: str(x), plugins)
         discovered = len(plugins)
         self.assertGreaterEqual(discovered, 1, msg="Discovered %d plugins (%s), expected >=1" % (discovered, ', '.join(plugin_names)))
+
+    def test_list_known_plugins(self):
+        """
+        Verify that known plugins can be listed.
+        """
+        listed_names = self.fetcher.list_known_plugins()
+        # There should be 4 examples returned
+        assert len(listed_names) == 4
