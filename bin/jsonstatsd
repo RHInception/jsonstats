@@ -257,7 +257,8 @@ if __name__ == "__main__":
 
             if options.plugins_whitelist:
                 plugins = options.plugins_whitelist
-                notification = 'Whitelist enabled: %s' % ",".join(plugins)
+                notification = 'Whitelist enabled: %s' % (
+                    ",".join(options.plugins_whitelist))
                 start_logger.info(notification)
                 print notification
 
@@ -269,9 +270,16 @@ if __name__ == "__main__":
                     if bl_plugin in plugins:
                         plugins.remove(bl_plugin)
 
-                notification = 'Blacklist enabled: %s' % ",".join(plugins)
+                notification = 'Blacklist enabled: %s' % (
+                    ",".join(options.plugins_blacklist))
                 start_logger.info(notification)
                 print notification
+
+            load_request = (
+                'Requesting the following plugins to be loaded: %s' % (
+                ",".join(plugins)))
+            start_logger.info(load_request)
+            print load_request
 
         # Fall back to old school container if on 2.4.x
         if py_version >= '2.4.0' and py_version < '2.5.0':
