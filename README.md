@@ -146,6 +146,13 @@ of all RPM packages installed on the system.
       -e PLUGIN_PATHSPEC --extra-plugins=PLUGIN_PATHSPEC
                             Path to directory with additional plugins
 
+      -b PLUGIN, --blacklist-plugin=PLUGIN
+                            A plugin to add to the blacklist. This will keep the plugin from loading. Can not be used with a whitelist. May be used multiple times.
+      -w PLUGIN, --white-plugin=PLUGIN
+                        A plugin to add to the whitelist. If used only plugins in the whitelist will be loaded. Can not be used with a blacklist. May be used multiple times.  
+
+    Note: use colons to to specify multiple extra-plugin paths
+
 
 # More Information
 
@@ -181,7 +188,7 @@ There are two log file which are produced by a running instance.
 
 * **jsonstatsd_access.log**: Access log similar to apache's access log.
 * **jsonstatsd.log**: Application level logging which logs some logic results.
-
+* **startup.log**: Start up related logging. Notes whitelist/blacklist info.
 
 ## Tests
 Run `make tests` to execute the test suite.

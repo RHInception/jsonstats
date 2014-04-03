@@ -6,8 +6,12 @@ class StatsApp(object):
     """
     Gets and returns the stats.
     """
-    # load modules to run
-    _plugins = [p for p in JsonStats.FetchStats.Fetcher.get_plugins() if p._state]
+    def __init__(self, plugins=[]):
+        if plugins:
+            self._plugins = [p for p in JsonStats.FetchStats.Fetcher.get_specific_plugins(
+                plugins) if p._state]
+        else:
+            self._plugins = [p for p in JsonStats.FetchStats.Fetcher.get_plugins() if p._state]
 
     def __call__(self, environ, start_response):
         result = {}
