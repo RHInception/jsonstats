@@ -2,12 +2,12 @@
 .\"     Title: jsonstatsd
 .\"    Author: :doctype:manpage
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 02/16/2014
+.\"      Date: 04/03/2014
 .\"    Manual: RESTful interface to query system facts
 .\"    Source: jsonstats 1.0.2
 .\"  Language: English
 .\"
-.TH "JSONSTATSD" "1" "02/16/2014" "jsonstats 1\&.0\&.2" "RESTful interface to query sys"
+.TH "JSONSTATSD" "1" "04/03/2014" "jsonstats 1\&.0\&.2" "RESTful interface to query sys"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -74,6 +74,16 @@ to store application logs in\&. Default:
 .RS 4
 Path to one or more directories holding custom fact plugins\&. Separate multiple paths with colon characters\&. For example:
 \fB\-\-extra\-plugins=/path1:/another/path\fR
+.RE
+.PP
+\fB\-b PLUGIN\fR, \fB\-\-blacklist\-plugin=PLUGIN\fR
+.RS 4
+A plugin to add to the blacklist\&. This will keep the plugin from loading\&. Can not be used with a whitelist\&. May be used multiple times\&.
+.RE
+.PP
+\fB\-w PLUGIN\fR, \fB\-\-white\-plugin=PLUGIN\fR
+.RS 4
+A plugin to add to the whitelist\&. If used only plugins in the whitelist will be loaded\&. Can not be used with a blacklist\&. May be used multiple times\&.
 .RE
 .SH "EXAMPLE"
 .sp

@@ -149,7 +149,7 @@ of all RPM packages installed on the system.
       -b PLUGIN, --blacklist-plugin=PLUGIN
                             A plugin to add to the blacklist. This will keep the plugin from loading. Can not be used with a whitelist. May be used multiple times.
       -w PLUGIN, --white-plugin=PLUGIN
-                        A plugin to add to the whitelist. If used only plugins in the whitelist will be loaded. Can not be used with a blacklist. May be used multiple times.  
+                        A plugin to add to the whitelist. If used only plugins in the whitelist will be loaded. Can not be used with a blacklist. May be used multiple times.
 
     Note: use colons to to specify multiple extra-plugin paths
 

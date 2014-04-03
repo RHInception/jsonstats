@@ -53,6 +53,19 @@ Path to one or more directories holding custom fact plugins. Separate
 multiple paths with colon characters. For example:
 *--extra-plugins=/path1:/another/path*
 
+*-b PLUGIN*, *--blacklist-plugin=PLUGIN*::
+
+A plugin to add to the blacklist. This will keep the plugin from
+loading. Can not be used with a whitelist. May be used multiple times.
+
+*-w PLUGIN*, *--white-plugin=PLUGIN*::
+
+A plugin to add to the whitelist. If used only plugins in the
+whitelist will be loaded. Can not be used with a blacklist. May be
+used multiple times.
+
+
+
 
 EXAMPLE
 -------

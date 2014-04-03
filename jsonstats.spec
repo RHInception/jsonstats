@@ -209,6 +209,13 @@ rm -rf $RPM_BUILD_ROOT
 ######################################################################
 
 %changelog
+* Thu Apr  3 2014 Tim Bielawa <tbielawa@redhat.com> - 1.0.2-1
+- New Plugins: Timestamp
+- Better debian compat
+- Configurable 'extra plugin' paths
+- White/black listing plugins
+- Fix init script bug
+
 * Fri Dec 13 2013 Tim Bielawa <tbielawa@redhat.com> - 1.0.1-1
 - Bug fixes and useability improvements
 - CLI options parsed before plugin loading
