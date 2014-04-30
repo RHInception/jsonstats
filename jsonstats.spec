@@ -13,14 +13,14 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 Name:            jsonstats
 %define _name    jsonstatsd
-Release:         2%{?dist}
+Release:         1%{?dist}
 Summary:         Client for exposing system information over a REST interface
-Version:         1.0.0
+Version:         1.0.2
 
 Group:           Development/Libraries
 License:         MIT
 Source0:         %{name}-%{version}.tar.gz
-Url:             https://github.com/tbielawa/jsonstats
+Url:             https://github.com/RHInception/jsonstats
 
 BuildArch:        noarch
 # Common *Requires
@@ -97,7 +97,7 @@ BuildRequires:    systemd
 ######################################################################
 
 %pre
-getent passwd %{name}d >/dev/null 2>&1 || %{_sbindir}/useradd --no-create-home --shell %{_sbindir}/nologin --system %{name}d
+getent passwd %{_name} >/dev/null 2>&1 || %{_sbindir}/useradd -M -r --shell %{_sbindir}/nologin  %{_name}
 
 
 ######################################################################
@@ -112,7 +112,7 @@ getent passwd %{name}d >/dev/null 2>&1 || %{_sbindir}/useradd --no-create-home -
 if [ $1 -eq 0 ] ; then
     /sbin/service %{_name} stop >/dev/null 2>&1
     /sbin/chkconfig --del %{_name}
-    %{_sbindir}/userdel -r %{_name} > /dev/null 2>&1
+    %{_sbindir}/userdel %{_name} > /dev/null 2>&1
 fi
 
 %postun
@@ -188,6 +188,8 @@ serializable python datastructure.
 %install
 %{__python} setup.py install -O1 --root=$RPM_BUILD_ROOT
 %{__mkdir_p} $RPM_BUILD_ROOT%{_localstatedir}/log/%{_name}
+mkdir -p $RPM_BUILD_ROOT/%{_mandir}/man1/
+cp -v docs/man/man1/*.1 $RPM_BUILD_ROOT/%{_mandir}/man1/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -201,10 +203,27 @@ rm -rf $RPM_BUILD_ROOT
 %{init_script}
 %config(noreplace)/etc/sysconfig/%{_name}
 %attr(0755,jsonstatsd,jsonstatsd) %dir %{_localstatedir}/log/%{_name}
+%doc %{_mandir}/man1/jsonstatsd*
+%doc README.md LICENSE
 
 ######################################################################
 
 %changelog
+* Thu Apr  3 2014 Tim Bielawa <tbielawa@redhat.com> - 1.0.2-1
+- New Plugins: Timestamp
+- Better debian compat
+- Configurable 'extra plugin' paths
+- White/black listing plugins
+- Fix init script bug
+
+* Fri Dec 13 2013 Tim Bielawa <tbielawa@redhat.com> - 1.0.1-1
+- Bug fixes and useability improvements
+- CLI options parsed before plugin loading
+- JSON output is sorted
+- Facter plugin uses puppet only if available
+- Packaging correctly adds/removes jsonstatsd user
+- More unit tests
+
 * Wed Nov 27 2013 Tim Bielawa <tbielawa@redhat.com> - 1.0.0-2
 - Make log files named consistently
 

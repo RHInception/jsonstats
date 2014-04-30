@@ -1,27 +1,22 @@
 #!/usr/bin/env python
-try:
-    import json
-except:
-    import simplejson as json
 import os
-from JsonStats.FetchStats.Plugins import *
-import JsonStats.FetchStats
 import logging
 import logging.handlers
 import re
 import urllib
 import syslog
 import errno
+import JsonStats.Utils
 
 
 ######################################################################
 # Utility functions for the pseudo-wsgi app
-def make_app():
+def make_app(plugins=[]):
     """
     Creates a WSGI application for use.
     """
     return Router({
-        '.*': StatsApp(),
+        '.*': StatsApp(plugins),
     })
 
 
@@ -38,7 +33,7 @@ def create_logger(name, filename,
     try:
         handler = logging.handlers.TimedRotatingFileHandler(
             logfile, 'd')
-    except IOError as e:
+    except IOError, e:
         if e.errno == errno.EACCES:
             syslog.syslog(syslog.LOG_ERR, "Error: Unable to write to %s. Exiting" % logfile)
             raise SystemExit(1)
@@ -49,7 +44,7 @@ def create_logger(name, filename,
         return logger
 
 
-def run_server(host, port):
+def run_server(host, port, plugins=[]):
     """
     If the server is called directly then serve via wsgiref.
     """
@@ -66,7 +61,7 @@ def run_server(host, port):
                 self.log_date_time_string(),
                 format % args))
 
-    application = make_app()
+    application = make_app(plugins)
 
     httpd = make_server(
         host, int(port), application,
@@ -75,7 +70,7 @@ def run_server(host, port):
     httpd.serve_forever()
 
 
-def run_old_server(host, port):
+def run_old_server(host, port, plugins=[]):
     """
     Code for running the old server.
     """
@@ -157,7 +152,8 @@ def run_old_server(host, port):
                 'REMOTE_HOST': '',
             }
 
-    server = WSGILiteServer((host, port), create_wsgi_wrapper(make_app()))
+    server = WSGILiteServer((host, port), create_wsgi_wrapper(
+        make_app(plugins)))
     print "server listening on http://%s:%s" % (host, port)
     server.serve_forever()
 
@@ -202,28 +198,6 @@ class Router(object):
 
 
 ######################################################################
-class StatsApp(object):
-    """
-    Gets and returns the stats.
-    """
-
-    # load modules to run
-    _plugins = [p for p in JsonStats.FetchStats.Fetcher.get_plugins() if p._state]
-
-    def __call__(self, environ, start_response):
-        result = {}
-
-        # Execute each plugin
-        for plugin in self._plugins:
-            context = plugin.context
-            result[context] = plugin.dump()
-
-        # Return the json all together
-        start_response("200 OK", [("Content-Type", "application/json")])
-        return json.dumps(result)
-
-
-######################################################################
 if __name__ == "__main__":
     import platform
     py_version = platform.python_version()
@@ -231,8 +205,9 @@ if __name__ == "__main__":
 
     # Using optparse since argparse is not available in 2.5
     from optparse import OptionParser
-    parser = OptionParser()
-    parser.add_option('-p', '--port', dest='port', default=8008,
+    epilog = "Note: use colons to to specify multiple extra-plugin paths"
+    parser = OptionParser(epilog=epilog)
+    parser.add_option('-p', '--port', dest='port', default=8008, type='int',
                       help='Port to listen on. (Default: 8008)')
     parser.add_option(
         '-l', '--listen', dest='listen', default='0.0.0.0',
@@ -240,18 +215,78 @@ if __name__ == "__main__":
     parser.add_option(
         '--logdir', dest='logdir', default='./logs/',
         help='Directory to log access requests to. (Default: ./logs/)')
+    parser.add_option(
+        '--extra-plugins', '-e', dest='extra_plugins', metavar='PLUGIN_PATHSPEC',
+        help='Path to directory with additional plugins')
+
+    # Blacklisting
+    parser.add_option(
+        '--blacklist-plugin', '-b', dest='plugins_blacklist',
+        metavar='PLUGIN', action='append',
+        help=('A plugin to add to the blacklist. This will keep the plugin '
+              'from loading. Can not be used with a whitelist. May be used '
+              'multiple times.'))
+
+    # Whitelisting
+    parser.add_option(
+        '--white-plugin', '-w', dest='plugins_whitelist',
+        metavar='PLUGIN', action='append',
+        help=('A plugin to add to the whitelist. If used only plugins in the '
+              'whitelist will be loaded. Can not be used with a blacklist. '
+              'May be used multiple times.'))
 
     (options, args) = parser.parse_args()
 
+    if options.plugins_blacklist and options.plugins_whitelist:
+        parser.error('whitelist and blacklist are mutually exclusive')
+
     os.environ['JSONSTATS_LOG_DIR'] = options.logdir
+    if options.extra_plugins:
+        JsonStats.Utils.load_extra_plugins(options.extra_plugins)
 
     try:
+        # import StatsApp class after the CLI options are parsed. This
+        # lets you call '--help' without waiting for plugins first.
+        from JsonStats.FetchStats.Plugins import *
+        from JsonStats.StatsApp import StatsApp
+
+        plugins = []
+        if options.plugins_whitelist or options.plugins_blacklist:
+            start_logger = create_logger(
+                'start_logger', 'startup.log')
+
+            if options.plugins_whitelist:
+                plugins = options.plugins_whitelist
+                notification = 'Whitelist enabled: %s' % (
+                    ",".join(options.plugins_whitelist))
+                start_logger.info(notification)
+                print notification
+
+            if options.plugins_blacklist:
+                # We need the fetcher to get all the known plugins
+                import JsonStats.FetchStats
+                plugins = JsonStats.FetchStats.Fetcher.list_known_plugins()
+                for bl_plugin in options.plugins_blacklist:
+                    if bl_plugin in plugins:
+                        plugins.remove(bl_plugin)
+
+                notification = 'Blacklist enabled: %s' % (
+                    ",".join(options.plugins_blacklist))
+                start_logger.info(notification)
+                print notification
+
+            load_request = (
+                'Requesting the following plugins to be loaded: %s' % (
+                    ",".join(plugins)))
+            start_logger.info(load_request)
+            print load_request
+
         # Fall back to old school container if on 2.4.x
         if py_version >= '2.4.0' and py_version < '2.5.0':
             run_old_server(options.listen, int(options.port))
         # Else use the builtin wsgi container
         elif py_version >= '2.5.0':
-            run_server(options.listen, int(options.port))
+            run_server(options.listen, int(options.port), plugins)
         else:
             syslog.syslog(syslog.LOG_ERR, 'Error: Untested Python version in use: %s. Exiting' % py_version)
             raise SystemExit(1)

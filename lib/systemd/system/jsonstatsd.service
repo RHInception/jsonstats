@@ -4,7 +4,7 @@ After=syslog.target network.target auditd.service
 
 [Service]
 EnvironmentFile=/etc/sysconfig/jsonstatsd
-ExecStart=/usr/bin/jsonstatsd --listen $INTERFACE --port $PORT --logdir $LOGDIR
+ExecStart=/usr/bin/jsonstatsd $OPTIONS
 User=jsonstatsd
 
 [Install]
