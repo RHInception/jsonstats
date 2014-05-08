@@ -15,7 +15,7 @@ Name:            jsonstats
 %define _name    jsonstatsd
 Release:         2%{?dist}
 Summary:         Client for exposing system information over a REST interface
-Version:         1.0.2
+Version:         1.0.3
 
 Group:           Development/Libraries
 License:         MIT
@@ -209,6 +209,9 @@ rm -rf $RPM_BUILD_ROOT
 ######################################################################
 
 %changelog
+* Thu May  8 2014 Tim Bielawa <tbielawa@redhat.com> - 1.0.3-1
+- Don't set 'epilog' in option parser on old python boxes
+
 * Thu May  1 2014 Chris Murphy <chmurphy@redhat.com> - 1.0.2-2
 - Bumped release because of earlier build conflict
 
