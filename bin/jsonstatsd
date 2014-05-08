@@ -205,8 +205,15 @@ if __name__ == "__main__":
 
     # Using optparse since argparse is not available in 2.5
     from optparse import OptionParser
-    epilog = "Note: use colons to to specify multiple extra-plugin paths"
-    parser = OptionParser(epilog=epilog)
+
+    (major, minor, patch) = platform.python_version_tuple()
+    if int(major) == 2 and int(minor) < 5:
+        # 'epilog' did not exist until after 2.4
+        parser = OptionParser()
+    else:
+        epilog = "Note: use colons to to specify multiple extra-plugin paths"
+        parser = OptionParser(epilog=epilog)
+
     parser.add_option('-p', '--port', dest='port', default=8008, type='int',
                       help='Port to listen on. (Default: 8008)')
     parser.add_option(
