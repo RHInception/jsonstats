@@ -13,7 +13,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 Name:            jsonstats
 %define _name    jsonstatsd
-Release:         2%{?dist}
+Release:         1%{?dist}
 Summary:         Client for exposing system information over a REST interface
 Version:         1.0.3
 
