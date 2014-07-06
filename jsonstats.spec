@@ -13,7 +13,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 Name:            jsonstats
 %define _name    jsonstatsd
-Release:         1%{?dist}
+Release:         2%{?dist}
 Summary:         Client for exposing system information over a REST interface
 Version:         1.0.3
 
@@ -209,6 +209,9 @@ rm -rf $RPM_BUILD_ROOT
 ######################################################################
 
 %changelog
+* Sun Jul  6 2014 Tim Bielawa <tbielawa@redhat.com> - 1.0.3-2
+- RPM version includes release string now
+
 * Thu May  8 2014 Tim Bielawa <tbielawa@redhat.com> - 1.0.3-1
 - Don't set 'epilog' in option parser on old python boxes
 
