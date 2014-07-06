@@ -16,7 +16,7 @@ class RPM(Fetcher):
         self._refresh_time = datetime.datetime.utcnow()
         self._rpms = {}
 
-        cmd = 'rpm -qa --queryformat "%{NAME} %{VERSION}\n"'
+        cmd = 'rpm -qa --queryformat "%{NAME} %{VERSION}-%{RELEASE}.%{ARCH}\n"'
 
         try:
             for line in self._exec(cmd).split('\n')[:-1]:
