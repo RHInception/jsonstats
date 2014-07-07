@@ -149,3 +149,34 @@ rpm: rpmcommon
 	@echo "JsonStats RPMs are built:"
 	@find rpm-build -maxdepth 2 -name 'jsonstats*.rpm' | awk '{print "    " $$1}'
 	@echo "#############################################"
+
+virtualenv:
+	@echo "#############################################"
+	@echo "# Creating a virtualenv"
+	@echo "#############################################"
+	virtualenv $(NAME)env
+	. $(NAME)env/bin/activate && pip install pep8 nose coverage mock
+
+ci-unittests:
+	@echo "#############################################"
+	@echo "# Running Unit Tests in virtualenv"
+	@echo "#############################################"
+#	. $(NAME)env/bin/activate && nosetests -v --with-cover --cover-min-percentage=80 --cover-package=$(TESTPACKAGE) test/
+	. $(NAME)env/bin/activate && nosetests -v test/
+
+ci-list-deps:
+	@echo "#############################################"
+	@echo "# Listing all pip deps"
+	@echo "#############################################"
+	. $(NAME)env/bin/activate && pip freeze
+
+ci-pep8:
+	@echo "#############################################"
+	@echo "# Running PEP8 Compliance Tests in virtualenv"
+	@echo "#############################################"
+#	. $(NAME)env/bin/activate && pep8 --ignore=E501,E121,E124 src/$(SHORTNAME)/
+	. $(NAME)env/bin/activate && pep8 --ignore=E501,E121,E124 JsonStats
+
+
+ci: clean virtualenv ci-list-deps ci-pep8 ci-unittests
+	:

@@ -6,3 +6,4 @@ dist
 rpm-build
 logs
 docs/man/man1/*.xml
+env
