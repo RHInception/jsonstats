@@ -13,7 +13,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 Name:            jsonstats
 %define _name    jsonstatsd
-Release:         2%{?dist}
+Release:         3%{?dist}
 Summary:         Client for exposing system information over a REST interface
 Version:         1.0.3
 
@@ -209,6 +209,9 @@ rm -rf $RPM_BUILD_ROOT
 ######################################################################
 
 %changelog
+* Tue Jul 15 2014 Tim Bielawa <tbielawa@redhat.com> - 1.0.3-3
+- Bump for fixes
+
 * Sun Jul  6 2014 Tim Bielawa <tbielawa@redhat.com> - 1.0.3-2
 - RPM version includes release string now
 
