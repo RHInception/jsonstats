@@ -24,7 +24,7 @@ else:
 
 boot_system = None
 system_major = version.split('.')[0]
-if distname.lower() == 'redhat':
+if distname.lower() == 'redhat' or 'Red Hat' in distname:
     if int(system_major) in [5, 6]:
         boot_system = 'sysv'
     elif int(system_major) >= 7:
@@ -41,9 +41,11 @@ else:
     # Too bad
     boot_system = 'sysv'
 
+print boot_system
+
 datum = {
     'systemd': ('/usr/lib/systemd/system', ['lib/systemd/system/jsonstatsd.service', ]),
-    'sysv': ('/etc/init.d', ['etc/init.d/jsonstatsd', ]),
+    'sysv': ('/etc/rc.d/init.d', ['etc/rc.d/init.d/jsonstatsd', ]),
 }
 
 final_data_files = [

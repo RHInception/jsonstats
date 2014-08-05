@@ -11,9 +11,16 @@
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 %endif
 
+# Fedora >= 18, RHEL >= 7, and CentOS >= 7 have migrated to systemd
+# and now provide the proper RPM macros
+%if 0%{?fedora} >= 18 || 0%{?rhel} >= 7 || 0%{?centos} >= 7
+%global with_systemd_macros 1
+%global with_tmpfiles_macro 1
+%endif
+
 Name:            jsonstats
 %define _name    jsonstatsd
-Release:         3%{?dist}
+Release:         4%{?dist}
 Summary:         Client for exposing system information over a REST interface
 Version:         1.0.3
 
@@ -30,65 +37,21 @@ BuildRequires:    redhat-rpm-config
 
 
 ######################################################################
+# Fedora >= 18, RHEL >= 7, and CentOS >= 7
+%if 0%{?with_systemd_macros}
+Requires(post):   systemd
+Requires(preun):  systemd
+Requires(postun): systemd
+BuildRequires:    systemd
+%endif
+
 # RHEL 5/6
-%if "%{distribution}" == "el"
-# begin inner-if
-%if 0%{?rhel} <= 6
+%if ! 0%{?with_systemd_macros}
 Requires(post):   chkconfig
 Requires(preun):  chkconfig
 Requires(preun):  initscripts
 Requires(postun): initscripts
-%define boot_system sysv
 %endif
-
-######################################################################
-# distribution is not "el", so probably fedora
-%else
-
-######################################################################
-# Fedora =< 17 require systemd-units && systemd
-%if 0%{?fedora} > 0
-%if 0%{?fedora} <= 17
-Requires(post):   systemd-units
-Requires(preun):  systemd-units
-Requires(postun): systemd-units
-%define boot_system systemd_old
-%endif
-%endif
-
-
-######################################################################
-# Fedora > 17 just requires systemd
-%if 0%{?fedora} > 17
-Requires(post):   systemd
-Requires(preun):  systemd
-Requires(postun): systemd
-BuildRequires:    systemd
-%define boot_system systemd_new
-%endif
-
-######################################################################
-# (same w/ RHEL7+)
-%if 0%{?rhel} >= 7
-Requires(post):   systemd
-Requires(preun):  systemd
-Requires(postun): systemd
-BuildRequires:    systemd
-%define boot_system systemd_new
-%endif
-
-%endif
-
-######################################################################
-# Define the name of the init script to include in the files section
-######################################################################
-%if %{boot_system} == "sysv"
-%define init_script /etc/init.d/jsonstatsd
-%else
-%define init_script %{_unitdir}/%{_name}.service
-%endif
-
-
 
 ######################################################################
 # And this ends our *Requires madness. Let's set up the proper
@@ -99,77 +62,35 @@ BuildRequires:    systemd
 %pre
 getent passwd %{_name} >/dev/null 2>&1 || %{_sbindir}/useradd -M -r --shell %{_sbindir}/nologin  %{_name}
 
-
-######################################################################
-# BEGIN SysV
-# Reference: http://fedoraproject.org/wiki/Packaging:SysVInitScript#Initscripts_in_spec_file_scriptlets
-######################################################################
-%if %{boot_system} == "sysv"
 %post
+%if 0%{?with_systemd_macros}
+%systemd_post %{_name}.service
+%else
 /sbin/chkconfig --add %{_name}
+%endif
 
 %preun
+%if 0%{?with_systemd_macros}
+%systemd_preun %{_name}.service
+%{_sbindir}/userdel -r %{_name} > /dev/null 2>&1
+%else
 if [ $1 -eq 0 ] ; then
     /sbin/service %{_name} stop >/dev/null 2>&1
     /sbin/chkconfig --del %{_name}
     %{_sbindir}/userdel %{_name} > /dev/null 2>&1
 fi
-
-%postun
-if [ "$1" -ge "1" ] ; then
-    /sbin/service ${_name} condrestart >/dev/null 2>&1 || :
-fi
 %endif
-######################################################################
-# END SysV
-######################################################################
-
-######################################################################
-# BEGIN Systemd - Fedora 17 and older
-# Reference: http://fedoraproject.org/wiki/Packaging:ScriptletSnippets#Manual_scriptlets_.28Fedora_17_or_older.29
-######################################################################
-%if %{boot_system} == "systemd_old"
-%post
-if [ $1 -eq 1 ] ; then
-    # Initial installation
-    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-fi
-
-%preun
-if [ $1 -eq 0 ] ; then
-    # Package removal, not upgrade
-    /bin/systemctl --no-reload disable %{_name}.service > /dev/null 2>&1 || :
-    /bin/systemctl stop %{_name}.service > /dev/null 2>&1 || :
-    %{_sbindir}/userdel -r %{_name} > /dev/null 2>&1
-fi
 
 %postun
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-if [ $1 -ge 1 ] ; then
-    # Package upgrade, not uninstall
-    /bin/systemctl try-restart %{_name}.service >/dev/null 2>&1 || :
-fi
-%endif
-######################################################################
-# END Systemd - Fedora 17 and older
-######################################################################
-
-######################################################################
-# BEGIN Systemd - Fedora 18+ & RHEL7+
-######################################################################
-%if %{boot_system} == "systemd_new"
-%post
-%systemd_post %{_name}.service
-
-%preun
-%systemd_preun %{_name}.service
-%{_sbindir}/userdel -r %{_name} > /dev/null 2>&1
-
-%postun
+%if 0%{?with_systemd_macros}
 %systemd_postun_with_restart %{_name}.service
+%else
+if [ "$1" -ge "1" ] ; then
+    /sbin/service %{name} condrestart >/dev/null 2>&1 || :
+fi
 %endif
 ######################################################################
-# END Systemd - Fedora 18+ & RHEL7+
+# END
 ######################################################################
 
 %description
@@ -177,7 +98,6 @@ A simple REST client which exposes provides arbitrary system
 information ('facts'). The fact providing system is plugin
 based. Exposing additional facts is as simple as returning a JSON
 serializable python datastructure.
-
 
 %prep
 %setup -q
@@ -200,7 +120,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{python_sitelib}/*
 %{_bindir}/%{_name}
-%{init_script}
+%if 0%{?with_systemd_macros}
+%{_unitdir}/%{_name}.service
+%else
+%{_initddir}/%{_name}
+%endif
 %config(noreplace)/etc/sysconfig/%{_name}
 %attr(0755,jsonstatsd,jsonstatsd) %dir %{_localstatedir}/log/%{_name}
 %doc %{_mandir}/man1/jsonstatsd*
@@ -209,6 +133,10 @@ rm -rf $RPM_BUILD_ROOT
 ######################################################################
 
 %changelog
+* Mon Aug  4 2014 Chris Murphy <chmurphy@redhat.com> - 1.0.3-4
+- Update spec to work with new RHEL 7 and systemd RPM Macros
+- Depreciated Fedora 17 and below
+
 * Tue Jul 15 2014 Tim Bielawa <tbielawa@redhat.com> - 1.0.3-3
 - Bump for fixes
 
