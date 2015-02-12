@@ -17,16 +17,24 @@ class Facter(Fetcher):
 
     Dependencies:
     * Facter - http://puppetlabs.com/blog/facter-part-1-facter-101
+    * PyYAML - http://pyyaml.org/wiki/PyYAML
 
     Optional dependencies:
     * Puppet - http://puppetlabs.com/puppet/what-is-puppet
     """
 
-    import yaml
+    try:
+        import yaml
+    except ImportError:
+        yaml = None
 
     def __init__(self):
         self.context = 'facter'
         self._cmd = 'facter --yaml 2>/dev/null'
+
+        if self.yaml is None:
+            self._loaded(False, msg='No module named yaml')
+            return
 
         if os.path.exists('/usr/bin/puppet'):
             self._cmd = 'facter -p --yaml 2>/dev/null'
