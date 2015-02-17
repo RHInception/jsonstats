@@ -20,9 +20,9 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 Name:            jsonstats
 %define _name    jsonstatsd
-Release:         4%{?dist}
+Release:         1%{?dist}
 Summary:         Client for exposing system information over a REST interface
-Version:         1.0.3
+Version:         1.0.4
 
 Group:           Development/Libraries
 License:         MIT
@@ -133,6 +133,9 @@ rm -rf $RPM_BUILD_ROOT
 ######################################################################
 
 %changelog
+* Tue Feb 17 2015 Tim Bielawa <tbielawa@redhat.com> - 1.0.4-1
+- Disable Facter plugin if yaml import fails
+
 * Mon Aug  4 2014 Chris Murphy <chmurphy@redhat.com> - 1.0.3-4
 - Update spec to work with new RHEL 7 and systemd RPM Macros
 - Depreciated Fedora 17 and below
